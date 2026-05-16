@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLPSI Latin – Familia Romana Ch. 6 Exam Prep</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Inconsolata:wght@400;600;700&display=swap');
+
+  :root {
+    --bg: #0e0c09;
+    --bg2: #141209;
+    --bg3: #1c1910;
+    --surface: #1e1b12;
+    --border: #2e2a1e;
+    --border2: #3d3824;
+    --text: #e8dfc8;
+    --text2: #a89870;
+    --text3: #6b5e42;
+    --gold: #c9a84c;
+    --gold2: #e8c96b;
+    --green: #4eca7a;
+    --green-bg: #0a1f14;
+    --red: #e05a4a;
+    --red-bg: #1f0e0a;
+    --amber: #e8a83a;
+    --amber-bg: #1f1508;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inconsolata', 'Courier New', monospace;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(201,168,76,0.04) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 90%, rgba(201,168,76,0.03) 0%, transparent 50%);
+  }
+
+  #app { max-width: 860px; margin: 0 auto; padding: 24px 20px; }
+
+  /* ---- START SCREEN ---- */
+  #start-screen { text-align: center; padding: 40px 0; }
+  .latin-title {
+    font-family: 'IM Fell English', Georgia, serif;
+    font-size: 3rem;
+    letter-spacing: 2px;
+    color: var(--gold2);
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  .latin-sub {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    color: var(--text2);
+    font-size: 1rem;
+    margin-bottom: 6px;
+  }
+  .latin-detail { font-size: 0.75rem; color: var(--text3); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 36px; }
+
+  .divider { height: 1px; background: linear-gradient(90deg, transparent, var(--border2), transparent); margin: 24px 0; }
+
+  .section-label { font-size: 0.68rem; color: var(--text3); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; }
+
+  .pill-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 12px; }
+  .pill {
+    padding: 7px 18px; border: 1px solid var(--border2); border-radius: 2px;
+    cursor: pointer; font-family: 'Inconsolata', monospace; font-size: 0.8rem;
+    background: var(--surface); color: var(--text2); transition: all 0.15s; letter-spacing: 1px;
+  }
+  .pill.active { border-color: var(--gold); background: rgba(201,168,76,0.12); color: var(--gold2); }
+  .pill:hover { border-color: var(--text2); }
+
+  .diff-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin: 12px 0 6px; }
+  .diff-card {
+    border: 1px solid var(--border); border-radius: 2px; padding: 18px 12px;
+    cursor: pointer; background: var(--surface); transition: all 0.15s; text-align: left;
+  }
+  .diff-card.active { border-color: var(--gold); background: rgba(201,168,76,0.08); }
+  .diff-card h3 { font-family: 'IM Fell English', serif; font-size: 1.1rem; color: var(--gold2); margin-bottom: 4px; }
+  .diff-card p { font-size: 0.72rem; color: var(--text3); line-height: 1.5; }
+
+  .start-btn {
+    margin-top: 32px; padding: 14px 52px; font-family: 'IM Fell English', serif;
+    font-size: 1.1rem; background: var(--gold); color: #0e0c09; border: none;
+    border-radius: 2px; cursor: pointer; letter-spacing: 2px;
+    transition: all 0.15s; text-transform: uppercase;
+  }
+  .start-btn:hover { background: var(--gold2); transform: translateY(-1px); }
+
+  .info-note { font-size: 0.72rem; color: var(--text3); margin-top: 10px; font-style: italic; }
+
+  /* ---- QUIZ SCREEN ---- */
+  #quiz-screen { display: none; }
+
+  .topbar {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 18px; flex-wrap: wrap;
+  }
+  .badge {
+    font-size: 0.68rem; padding: 3px 8px; border: 1px solid var(--border2);
+    border-radius: 2px; color: var(--text3); letter-spacing: 1px; text-transform: uppercase;
+  }
+  .badge.grammar { border-color: #6ba4c9; color: #6ba4c9; }
+  .badge.vocab { border-color: #9c6bc9; color: #9c6bc9; }
+  .badge.text { border-color: #4eca7a; color: #4eca7a; }
+  .badge.syntax { border-color: #e8a83a; color: #e8a83a; }
+  .badge.easy { border-color: #4eca7a; color: #4eca7a; }
+  .badge.medium { border-color: var(--amber); color: var(--amber); }
+  .badge.hard { border-color: var(--red); color: var(--red); }
+
+  .timer-bar-wrap { flex: 1; min-width: 100px; height: 4px; background: var(--bg3); border-radius: 2px; overflow: hidden; }
+  .timer-bar { height: 100%; background: var(--gold); border-radius: 2px; transition: width 0.5s linear, background 0.5s; }
+  .timer-text { font-size: 0.78rem; color: var(--text2); min-width: 28px; text-align: right; }
+
+  .stats-row { display: flex; gap: 20px; margin-bottom: 16px; font-size: 0.75rem; color: var(--text3); flex-wrap: wrap; }
+  .stats-row span b { color: var(--text); }
+
+  .progress-outer { background: var(--bg3); border-radius: 2px; height: 3px; margin-bottom: 22px; }
+  .progress-inner { height: 3px; background: var(--gold); border-radius: 2px; transition: width 0.4s; }
+
+  .topic-label { font-size: 0.68rem; color: var(--text3); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+  .question-text {
+    font-family: 'IM Fell English', serif; font-size: 1.1rem; line-height: 1.7;
+    margin-bottom: 18px; color: var(--text);
+  }
+  .latin-extract {
+    border-left: 2px solid var(--gold);
+    padding: 10px 16px; margin: 10px 0 18px;
+    background: var(--bg3); border-radius: 0 2px 2px 0;
+    font-style: italic; font-family: 'IM Fell English', serif;
+    font-size: 1rem; line-height: 1.8; color: var(--gold2);
+  }
+
+  /* MCQ */
+  .options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+  .opt-btn {
+    padding: 11px 16px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 2px; color: var(--text); font-family: 'Inconsolata', monospace;
+    font-size: 0.88rem; text-align: left; cursor: pointer; transition: all 0.1s; line-height: 1.4;
+  }
+  .opt-btn:hover:not(:disabled) { border-color: var(--gold); background: rgba(201,168,76,0.07); }
+  .opt-btn.correct { border-color: var(--green); background: var(--green-bg); color: var(--green); }
+  .opt-btn.wrong { border-color: var(--red); background: var(--red-bg); color: var(--red); }
+  .opt-btn:disabled { cursor: default; }
+
+  /* SHORT */
+  .short-wrap { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  textarea {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 2px;
+    color: var(--text); font-family: 'Inconsolata', monospace; font-size: 0.88rem;
+    padding: 12px; resize: vertical; min-height: 80px; width: 100%;
+  }
+  textarea:focus { outline: none; border-color: var(--gold); }
+  .hint-text { font-size: 0.72rem; color: var(--text3); font-style: italic; }
+
+  .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+  .action-btn {
+    padding: 9px 22px; font-family: 'Inconsolata', monospace; font-size: 0.82rem;
+    background: var(--gold); color: #0e0c09; border: none; border-radius: 2px;
+    cursor: pointer; letter-spacing: 1px; text-transform: uppercase; transition: all 0.12s;
+  }
+  .action-btn:hover { background: var(--gold2); }
+  .action-btn.sec {
+    background: transparent; color: var(--text3); border: 1px solid var(--border2);
+  }
+  .action-btn.sec:hover { color: var(--text); border-color: var(--text2); }
+
+  .feedback-box {
+    padding: 14px 16px; border-radius: 2px; margin-bottom: 16px;
+    font-size: 0.85rem; line-height: 1.7; white-space: pre-wrap;
+  }
+  .feedback-box.correct { background: var(--green-bg); border: 1px solid var(--green); color: #b0ffd0; }
+  .feedback-box.incorrect { background: var(--red-bg); border: 1px solid var(--red); color: #ffb0b0; }
+  .feedback-box strong { display: block; margin-bottom: 6px; font-size: 0.92rem; font-family: 'IM Fell English', serif; }
+
+  /* ---- RESULTS ---- */
+  #results-screen { display: none; text-align: center; padding: 40px 0; }
+  .big-score { font-family: 'IM Fell English', serif; font-size: 5rem; color: var(--gold2); margin: 20px 0 4px; }
+  .score-label { color: var(--text2); margin-bottom: 30px; font-style: italic; font-family: 'IM Fell English', serif; }
+  .breakdown {
+    text-align: left; border: 1px solid var(--border); border-radius: 2px;
+    padding: 20px; margin: 20px 0; background: var(--surface);
+  }
+  .breakdown h3 { margin-bottom: 12px; font-size: 0.72rem; color: var(--text3); text-transform: uppercase; letter-spacing: 2px; }
+  .brow { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--bg3); font-size: 0.82rem; }
+  .brow:last-child { border: none; }
+  .brow .weak { color: var(--red); }
+  .brow .ok { color: var(--amber); }
+  .brow .strong { color: var(--green); }
+  .missed-list { text-align: left; margin: 20px 0; }
+  .missed-list h3 { margin-bottom: 10px; color: var(--text3); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 2px; }
+  .missed-item {
+    padding: 10px 14px; border-left: 2px solid var(--red); margin-bottom: 8px;
+    font-size: 0.8rem; background: var(--red-bg); border-radius: 0 2px 2px 0;
+  }
+  .missed-item .mq { color: #ffb0b0; margin-bottom: 4px; font-family: 'IM Fell English', serif; font-size: 0.88rem; }
+  .missed-item .ma { color: var(--text3); }
+  .res-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 24px; }
+
+  .timeout-flash { animation: tflash 0.3s ease; }
+  @keyframes tflash { 0%,100%{background:var(--bg)} 50%{background:#2a0a00} }
+
+  /* MATCHING question type */
+  .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .match-col { display: flex; flex-direction: column; gap: 6px; }
+  .match-col h4 { font-size: 0.68rem; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .match-item {
+    padding: 9px 12px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 2px; font-size: 0.85rem; cursor: pointer; transition: all 0.1s;
+  }
+  .match-item.selected { border-color: var(--gold); background: rgba(201,168,76,0.1); color: var(--gold2); }
+  .match-item.matched-correct { border-color: var(--green); background: var(--green-bg); color: var(--green); cursor: default; }
+  .match-item.matched-wrong { border-color: var(--red); background: var(--red-bg); color: var(--red); cursor: default; }
+
+  @media(max-width:600px){
+    .diff-grid{grid-template-columns:1fr}
+    .latin-title{font-size:2rem}
+    .big-score{font-size:3.5rem}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- START SCREEN -->
+<div id="start-screen">
+  <div class="latin-title">Familia Romana</div>
+  <div class="latin-sub">LLPSI – Capitulum VI: Via Latina</div>
+  <div class="latin-detail">Year 8 Latin · Exam Prep · Half-Yearly 2026</div>
+
+  <svg viewBox="0 0 500 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;margin:0 auto 28px;display:block">
+    <line x1="0" y1="20" x2="180" y2="20" stroke="#3d3824" stroke-width="1"/>
+    <polygon points="200,8 220,20 200,32 180,20" fill="none" stroke="#c9a84c" stroke-width="1"/>
+    <text x="250" y="25" font-family="'IM Fell English', serif" font-size="18" fill="#c9a84c" text-anchor="middle">SPQR</text>
+    <line x1="320" y1="20" x2="500" y2="20" stroke="#3d3824" stroke-width="1"/>
+  </svg>
+
+  <div class="section-label">Focus Area</div>
+  <div class="pill-row">
+    <button class="pill active" onclick="toggleUnit('all')">All Topics</button>
+    <button class="pill" onclick="toggleUnit('grammar')">Grammar</button>
+    <button class="pill" onclick="toggleUnit('vocab')">Vocabulary</button>
+    <button class="pill" onclick="toggleUnit('text')">Text Comprehension</button>
+    <button class="pill" onclick="toggleUnit('syntax')">Syntax &amp; Forms</button>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-label">Difficulty</div>
+  <div class="diff-grid">
+    <div class="diff-card active" onclick="setDiff('easy')" id="dc-easy">
+      <h3>Facilis</h3>
+      <p>Easy · 60 sec<br>Vocabulary & basic forms - Fast Revision</p>
+    </div>
+    <div class="diff-card" onclick="setDiff('medium')" id="dc-medium">
+      <h3>Mediocris</h3>
+      <p>Medium · 40 sec<br>Grammar & translation - Test Difficulty</p>
+    </div>
+    <div class="diff-card" onclick="setDiff('hard')" id="dc-hard">
+      <h3>Difficilis</h3>
+      <p>Merciless · 20 sec<br>Analysis & unseen text</p>
+    </div>
+  </div>
+  <div class="info-note">Missed questions repeat until answered correctly.</div>
+  <button class="start-btn" onclick="startQuiz()">Incipiāmus!</button>
+</div>
+
+<!-- QUIZ SCREEN -->
+<div id="quiz-screen">
+  <div class="topbar">
+    <span id="q-unit-badge" class="badge grammar">Grammar</span>
+    <span id="q-diff-badge" class="badge easy">Easy</span>
+    <span id="q-type-badge" class="badge" style="border-color:#888;color:#888">MCQ</span>
+    <div class="timer-bar-wrap"><div class="timer-bar" id="timer-bar"></div></div>
+    <div class="timer-text" id="timer-text">60</div>
+  </div>
+
+  <div class="stats-row">
+    <span>Q <b id="q-num">1</b>/<b id="q-total">?</b></span>
+    <span>✓ <b id="stat-correct">0</b></span>
+    <span>✗ <b id="stat-wrong">0</b></span>
+    <span>% <b id="stat-pct">—</b></span>
+    <span style="color:var(--amber)">↩ <b id="stat-repeat">0</b></span>
+  </div>
+  <div class="progress-outer"><div class="progress-inner" id="progress-bar"></div></div>
+
+  <div class="topic-label" id="q-topic">Topic</div>
+  <div class="question-text" id="q-text"></div>
+  <div class="latin-extract" id="q-extract" style="display:none"></div>
+
+  <div id="mcq-area" class="options"></div>
+  <div id="short-area" class="short-wrap" style="display:none">
+    <textarea id="short-input" placeholder="Scribe responsum tuum…"></textarea>
+    <div class="hint-text" id="hint-text"></div>
+    <div class="btn-group">
+      <button class="action-btn" onclick="submitShort()">Submit</button>
+      <button class="action-btn sec" onclick="skipQ()">Skip</button>
+    </div>
+  </div>
+
+  <div id="feedback-area" style="display:none">
+    <div class="feedback-box" id="feedback-box">
+      <strong id="feedback-title"></strong>
+      <span id="feedback-body"></span>
+    </div>
+    <button class="action-btn" onclick="nextQuestion()">Próxima →</button>
+  </div>
+</div>
+
+<!-- RESULTS SCREEN -->
+<div id="results-screen">
+  <div style="font-family:'IM Fell English',serif;color:var(--text2);font-style:italic;margin-bottom:8px">Examinātus est!</div>
+  <div class="big-score" id="final-pct">0%</div>
+  <div class="score-label" id="final-label"></div>
+  <div class="breakdown" id="topic-breakdown"></div>
+  <div class="missed-list" id="missed-list"></div>
+  <div class="res-btns">
+    <button class="action-btn" onclick="restartMissed()">Retry Missed</button>
+    <button class="action-btn sec" onclick="location.reload()">Start Over</button>
+  </div>
+</div>
+
+</div><!-- #app -->
+
+<script>
+// ============================================================
+// QUESTION BANK — LLPSI Familia Romana Ch. 1–6
+// Focused on Ch.6 content (via Latina / Mēdus & Lydia)
+// ============================================================
+const ALL_QUESTIONS = [
+
+// =============================================
+// VOCABULARY – Chapter 6 & prior
+// =============================================
+{unit:'vocab',topic:'Vocabulary – Nouns',diff:'easy',type:'mcq',
+ q:'What does "via" mean in Latin?',
+ opts:['road / way','gate','wall','town'],
+ ans:0, exp:'"Via" means road or way. Via Latina and Via Appia are famous Roman roads.'},
+
+{unit:'vocab',topic:'Vocabulary – Nouns',diff:'easy',type:'mcq',
+ q:'What does "murus" mean?',
+ opts:['road','door','wall','field'],
+ ans:2, exp:'"Murus" = wall. Plural "muri". Cf. English "mural" (wall painting).'},
+
+{unit:'vocab',topic:'Vocabulary – Nouns',diff:'easy',type:'mcq',
+ q:'What does "porta" mean?',
+ opts:['wall','gate / door','road','bridge'],
+ ans:1, exp:'"Porta" = gate or city gate. Compare English "portal".'},
+
+{unit:'vocab',topic:'Vocabulary – Nouns',diff:'easy',type:'mcq',
+ q:'What does "oppidum" mean?',
+ opts:['villa','road','town','gate'],
+ ans:2, exp:'"Oppidum" = town. Plural "oppida".'},
+
+{unit:'vocab',topic:'Vocabulary – Nouns',diff:'easy',type:'mcq',
+ q:'What does "saccus" mean?',
+ opts:['horse','bag / sack','litter','slave'],
+ ans:1, exp:'"Saccus" = bag or sack. English "sack" comes from this.'},
+
+{unit:'vocab',topic:'Vocabulary – Nouns',diff:'easy',type:'mcq',
+ q:'What does "lectīca" mean?',
+ opts:['book','litter / sedan chair','road','letter'],
+ ans:1, exp:'"Lectīca" = litter (a carried seat/couch). Rich Romans used these.'},
+
+{unit:'vocab',topic:'Vocabulary – Nouns',diff:'easy',type:'mcq',
+ q:'What does "equus" mean?',
+ opts:['road','slave','horse','master'],
+ ans:2, exp:'"Equus" = horse. Cf. English "equestrian".'},
+
+{unit:'vocab',topic:'Vocabulary – Nouns',diff:'easy',type:'mcq',
+ q:'What does "dominus" mean?',
+ opts:['friend','slave','master / lord','town'],
+ ans:2, exp:'"Dominus" = master or lord. Cf. English "dominate", "dominion".'},
+
+{unit:'vocab',topic:'Vocabulary – Nouns',diff:'easy',type:'mcq',
+ q:'What does "servus" mean?',
+ opts:['friend','slave','master','enemy'],
+ ans:1, exp:'"Servus" = slave. Cf. English "servant", "service".'},
+
+{unit:'vocab',topic:'Vocabulary – Nouns',diff:'easy',type:'mcq',
+ q:'What does "baculum" mean?',
+ opts:['bag','stick / rod','road','horse'],
+ ans:1, exp:'"Baculum" = stick or staff. Cf. English "bacteria" (little sticks). Masters beat slaves with a baculum.'},
+
+{unit:'vocab',topic:'Vocabulary – Nouns',diff:'easy',type:'mcq',
+ q:'What does "amīcus" mean?',
+ opts:['enemy','stranger','friend','master'],
+ ans:2, exp:'"Amīcus" = friend. Cf. English "amiable". Opposite: inimīcus (enemy).'},
+
+{unit:'vocab',topic:'Vocabulary – Nouns',diff:'easy',type:'mcq',
+ q:'What does "inimīcus" mean?',
+ opts:['friend','ally','enemy','slave'],
+ ans:2, exp:'"Inimīcus" = enemy (personal enemy). Note prefix in- (not) + amīcus.'},
+
+{unit:'vocab',topic:'Vocabulary – Nouns',diff:'easy',type:'mcq',
+ q:'What does "fēmina" mean?',
+ opts:['daughter','woman','girl','slave woman'],
+ ans:1, exp:'"Fēmina" = woman. Cf. English "feminine".'},
+
+{unit:'vocab',topic:'Vocabulary – Nouns',diff:'medium',type:'mcq',
+ q:'What does "ōstium" mean?',
+ opts:['window','roof','door / entrance','garden'],
+ ans:2, exp:'"Ōstium" = doorway or entrance. "Per ōstium intrāre" = to enter through the door.'},
+
+{unit:'vocab',topic:'Vocabulary – Nouns',diff:'medium',type:'mcq',
+ q:'What does "nummī" (pl.) mean?',
+ opts:['bags','coins / money','slaves','roads'],
+ ans:1, exp:'"Nummus/nummī" = coin(s) / money. Medus steals the master\'s money (nummōs dominī).'},
+
+{unit:'vocab',topic:'Vocabulary – Nouns',diff:'medium',type:'mcq',
+ q:'What does "sacellus" / "sacculus" mean?',
+ opts:['little bag / purse','small door','little road','small horse'],
+ ans:0, exp:'"Sacculus" = little bag / purse (diminutive of saccus). Medus hides money "in sacculō suō".'},
+
+{unit:'vocab',topic:'Vocabulary – Nouns',diff:'easy',type:'mcq',
+ q:'What does "umerus" mean?',
+ opts:['arm','shoulder','finger','back'],
+ ans:1, exp:'"Umerus" = shoulder. The slaves carry the sacks "umerīs" (on their shoulders).'},
+
+{unit:'vocab',topic:'Vocabulary – Adjectives',diff:'easy',type:'mcq',
+ q:'What does "bonus/bona/bonum" mean?',
+ opts:['bad','good','big','happy'],
+ ans:1, exp:'"Bonus" = good. Cf. "bon" in French.'},
+
+{unit:'vocab',topic:'Vocabulary – Adjectives',diff:'easy',type:'mcq',
+ q:'What does "malus/mala/malum" mean?',
+ opts:['good','big','bad','small'],
+ ans:2, exp:'"Malus" = bad / evil. Cf. English "malicious", "malevolent".'},
+
+{unit:'vocab',topic:'Vocabulary – Adjectives',diff:'easy',type:'mcq',
+ q:'What does "magnus/magna/magnum" mean?',
+ opts:['small','good','large / great','beautiful'],
+ ans:2, exp:'"Magnus" = large or great. Cf. English "magnificent", "magnitude".'},
+
+{unit:'vocab',topic:'Vocabulary – Adjectives',diff:'easy',type:'mcq',
+ q:'What does "parvus/parva/parvum" mean?',
+ opts:['great','beautiful','good','small'],
+ ans:3, exp:'"Parvus" = small. Cf. English "parvity" (rarity).'},
+
+{unit:'vocab',topic:'Vocabulary – Adjectives',diff:'easy',type:'mcq',
+ q:'What does "pulcher/pulchra/pulchrum" mean?',
+ opts:['ugly','large','beautiful','brave'],
+ ans:2, exp:'"Pulcher" = beautiful. Cf. English "pulchritude".'},
+
+{unit:'vocab',topic:'Vocabulary – Adjectives',diff:'easy',type:'mcq',
+ q:'What does "fessus/fessa/fessum" mean?',
+ opts:['happy','brave','tired / exhausted','angry'],
+ ans:2, exp:'"Fessus" = tired / exhausted. In Ch.6: "servī fessī sunt" – the slaves are tired.'},
+
+{unit:'vocab',topic:'Vocabulary – Adjectives',diff:'easy',type:'mcq',
+ q:'What does "īrātus/īrāta/īrātum" mean?',
+ opts:['tired','angry','good','slow'],
+ ans:1, exp:'"Īrātus" = angry. Cf. English "irate". Medus fears his angry master.'},
+
+{unit:'vocab',topic:'Vocabulary – Adjectives',diff:'easy',type:'mcq',
+ q:'What does "laetus/laeta/laetum" mean?',
+ opts:['sad','angry','tired','happy / joyful'],
+ ans:3, exp:'"Laetus" = happy. At the end of Ch.6: "fessus nōn est et laetus cantat" – he is not tired and sings happily.'},
+
+{unit:'vocab',topic:'Vocabulary – Adjectives',diff:'medium',type:'mcq',
+ q:'What does "vacuus/vacua/vacuum" mean?',
+ opts:['full','empty','broken','heavy'],
+ ans:1, exp:'"Vacuus" = empty. Cf. English "vacuum". "Neque vacuī sunt saccī" – the bags are not empty.'},
+
+{unit:'vocab',topic:'Vocabulary – Adjectives',diff:'medium',type:'mcq',
+ q:'What does "proba" (from probus/proba/probum) mean?',
+ opts:['clever','beautiful','honest / virtuous','shy'],
+ ans:2, exp:'"Probus/proba" = honest, virtuous. Lydia is described as "fēmina pulchra et proba".'},
+
+{unit:'vocab',topic:'Vocabulary – Adjectives',diff:'medium',type:'mcq',
+ q:'What does "foedus/foeda/foedum" mean?',
+ opts:['brave','ugly / foul','pleasant','tired'],
+ ans:1, exp:'"Foedus" = ugly, foul, disgusting. Opposite of pulcher. Used in Text E.'},
+
+{unit:'vocab',topic:'Vocabulary – Adverbs/Prepositions',diff:'easy',type:'mcq',
+ q:'What does "prope" mean?',
+ opts:['far from','near','around','between'],
+ ans:1, exp:'"Prope" = near. It takes the accusative: "prope Rōmam" = near Rome.'},
+
+{unit:'vocab',topic:'Vocabulary – Adverbs/Prepositions',diff:'easy',type:'mcq',
+ q:'What does "procul" mean?',
+ opts:['near','around','far away','through'],
+ ans:2, exp:'"Procul" = far away. Often with "ā/ab" + ablative: "procul ā vīllā" = far from the villa.'},
+
+{unit:'vocab',topic:'Vocabulary – Adverbs/Prepositions',diff:'easy',type:'mcq',
+ q:'What does "circum" mean?',
+ opts:['through','around','between','near'],
+ ans:1, exp:'"Circum" = around. Takes accusative. "Circum Rōmam mūrus est" = there is a wall around Rome.'},
+
+{unit:'vocab',topic:'Vocabulary – Adverbs/Prepositions',diff:'easy',type:'mcq',
+ q:'What does "inter" mean?',
+ opts:['behind','in front of','between / among','outside'],
+ ans:2, exp:'"Inter" = between / among. Takes accusative. Via Flāminia est inter Rōmam et Arīminum.'},
+
+{unit:'vocab',topic:'Vocabulary – Adverbs/Prepositions',diff:'easy',type:'mcq',
+ q:'What does "ante" mean?',
+ opts:['after / behind','in front of / before','between','around'],
+ ans:1, exp:'"Ante" = in front of / before. Takes accusative. Opposite of "post".'},
+
+{unit:'vocab',topic:'Vocabulary – Adverbs/Prepositions',diff:'easy',type:'mcq',
+ q:'What does "post" mean?',
+ opts:['before','around','after / behind','near'],
+ ans:2, exp:'"Post" = after / behind. Takes accusative. "Post Iūlium est Dāvus" = Davus is behind Julius.'},
+
+{unit:'vocab',topic:'Vocabulary – Adverbs/Prepositions',diff:'easy',type:'mcq',
+ q:'What does "per" mean?',
+ opts:['around','through','near','from'],
+ ans:1, exp:'"Per" = through. Takes accusative. "Per portam Capēnam" = through the Capene Gate.'},
+
+{unit:'vocab',topic:'Vocabulary – Verbs',diff:'easy',type:'mcq',
+ q:'What does "it" (singular, 3rd person) mean?',
+ opts:['he sees','he carries','he goes','he fears'],
+ ans:2, exp:'"It" = he/she/it goes. Verb: eō, īre. Plural: eunt.'},
+
+{unit:'vocab',topic:'Vocabulary – Verbs',diff:'easy',type:'mcq',
+ q:'What does "timet" mean?',
+ opts:['he sees','he hates','he fears','he carries'],
+ ans:2, exp:'"Timet" = he/she fears. 2nd conjugation: timeō, timēre. Medus dominum timet.'},
+
+{unit:'vocab',topic:'Vocabulary – Verbs',diff:'easy',type:'mcq',
+ q:'What does "videt" mean?',
+ opts:['he hears','he fears','he sees','he carries'],
+ ans:2, exp:'"Videt" = he/she sees. 2nd conj.: videō, vidēre. Passive: vidētur = is seen.'},
+
+{unit:'vocab',topic:'Vocabulary – Verbs',diff:'easy',type:'mcq',
+ q:'What does "portat / portant" mean?',
+ opts:['he/they fear(s)','he/they carry/carries','he/they go(es)','he/they see(s)'],
+ ans:1, exp:'"Portat" = he/she carries; "portant" = they carry. 1st conj.: portō, portāre.'},
+
+{unit:'vocab',topic:'Vocabulary – Verbs',diff:'easy',type:'mcq',
+ q:'What does "amat" mean?',
+ opts:['he walks','he loves','he fears','he is'],
+ ans:1, exp:'"Amat" = he/she loves. 1st conj.: amō, amāre. "Medus Lydiam amat."'},
+
+{unit:'vocab',topic:'Vocabulary – Verbs',diff:'easy',type:'mcq',
+ q:'What does "cantat" mean?',
+ opts:['he runs','he sings','he speaks','he drinks'],
+ ans:1, exp:'"Cantat" = he sings. 1st conj.: cantō, cantāre. Cf. English "canticle", "cantata".'},
+
+{unit:'vocab',topic:'Vocabulary – Verbs',diff:'medium',type:'mcq',
+ q:'What does "vehit" / "vehitur" mean?',
+ opts:['carries on foot / is carried on foot','rides / is ridden (carried by vehicle/animal)','hears / is heard','fears / is feared'],
+ ans:1, exp:'"Vehit" = carries/conveys; "vehitur" = is carried/rides. "Cornēlius equō vehitur" = Cornelius rides on horseback.'},
+
+{unit:'vocab',topic:'Vocabulary – Verbs',diff:'medium',type:'mcq',
+ q:'What does "intrat" mean?',
+ opts:['he leaves','he enters','he passes','he stays'],
+ ans:1, exp:'"Intrat" = he enters. 1st conj.: intrō, intrāre. "Per ōstium vīllae intrant" = they enter through the door of the villa.'},
+
+{unit:'vocab',topic:'Vocabulary – Verbs',diff:'medium',type:'mcq',
+ q:'What does "verberat" mean?',
+ opts:['he sees','he carries','he beats','he speaks'],
+ ans:2, exp:'"Verberat" = he beats/strikes. 1st conj.: verberō, verberāre. "Dominus servōs baculō verberat."'},
+
+{unit:'vocab',topic:'Vocabulary – Verbs',diff:'medium',type:'mcq',
+ q:'What does "habet" mean?',
+ opts:['he gives','he has / holds','he goes','he walks'],
+ ans:1, exp:'"Habet" = he has/holds. 2nd conj.: habeō, habēre. "Medus nummōs in sacculō habet."'},
+
+{unit:'vocab',topic:'Vocabulary – Verbs',diff:'medium',type:'mcq',
+ q:'What does "habitat" mean?',
+ opts:['he goes','he stays still','he lives / dwells','he builds'],
+ ans:2, exp:'"Habitat" = he lives/dwells. 1st conj.: habitō, habitāre. Cf. English "habitat", "habitation".'},
+
+{unit:'vocab',topic:'Vocabulary – Verbs',diff:'medium',type:'mcq',
+ q:'What does "abest" mean?',
+ opts:['he is here','he is absent / away','he goes','he arrives'],
+ ans:1, exp:'"Abest" = he is absent / away (from). Compound of ab + esse. "Medus procul ā vīllā abest."'},
+
+// =============================================
+// GRAMMAR – Active/Passive
+// =============================================
+{unit:'grammar',topic:'Active vs Passive',diff:'easy',type:'mcq',
+ q:'Identify the passive form: which of these is a passive verb?',
+ opts:['portat','portant','portātur','portō'],
+ ans:2, exp:'"Portātur" is passive (is being carried). The -tur ending signals 3rd person singular passive in the present tense.'},
+
+{unit:'grammar',topic:'Active vs Passive',diff:'easy',type:'mcq',
+ q:'What does the ending "-tur" on a verb signal?',
+ opts:['3rd person plural active','1st person singular passive','3rd person singular passive','2nd person singular active'],
+ ans:2, exp:'The ending "-tur" marks 3rd person singular passive: "he/she/it is ___ed".'},
+
+{unit:'grammar',topic:'Active vs Passive',diff:'easy',type:'mcq',
+ q:'What does the ending "-ntur" on a verb signal?',
+ opts:['3rd person singular passive','3rd person plural passive','1st person plural passive','2nd person plural'],
+ ans:1, exp:'"-ntur" marks 3rd person plural passive: "they are ___ed".'},
+
+{unit:'grammar',topic:'Active vs Passive',diff:'easy',type:'mcq',
+ q:'"Servī ā dominō timentur." Who fears whom?',
+ opts:['The slaves fear the master','The master fears the slaves','The slaves fear each other','The master fears himself'],
+ ans:1, exp:'Passive construction: "The slaves are feared by the master." So the master does the fearing.'},
+
+{unit:'grammar',topic:'Active vs Passive',diff:'medium',type:'mcq',
+ q:'Convert to passive: "Iūlius Dāvum amat." Which is correct?',
+ opts:['Dāvus Iūlium amātur.','Dāvus ā Iūliō amātur.','Dāvus ab Iūlius amātur.','Dāvus Iūliō amātur.'],
+ ans:1, exp:'In a passive sentence, the agent (doer) takes "ā/ab" + ablative. "Dāvus ā Iūliō amātur" = Davus is loved by Julius.'},
+
+{unit:'grammar',topic:'Active vs Passive',diff:'medium',type:'mcq',
+ q:'Which sentence correctly uses the passive with an agent?',
+ opts:['Iūlius portātur Dāvum.','Iūlius ā Dāvō portātur.','Iūlius ab Dāvum portātur.','Iūlius Dāvō portātur.'],
+ ans:1, exp:'"Ā/ab" + ablative marks the agent in a passive sentence. "Iūlius ā Dāvō portātur" = Julius is carried by Davus.'},
+
+{unit:'grammar',topic:'Active vs Passive',diff:'medium',type:'short',
+ q:'Convert to active voice: "Mārcus ā Syrā pulsātur."',
+ keywords:['syra','marcus','pulsat'],
+ hint:'The agent (ā Syrā) becomes the subject.',
+ exp:'"Syra Mārcum pulsat." – Syra punches Marcus. The agent ā Syrā becomes the subject, and the original subject Mārcus becomes the accusative object.'},
+
+{unit:'grammar',topic:'Active vs Passive',diff:'medium',type:'short',
+ q:'Convert to passive voice: "Dāvus et Ursus lectīcam portant."',
+ keywords:['lectica','portatur','davo','urso'],
+ hint:'The object becomes the subject; the former subjects take ā/ab + ablative.',
+ exp:'"Lectīca ā Dāvō et Ursō portātur." – The litter is carried by Davus and Ursus.'},
+
+{unit:'grammar',topic:'Active vs Passive',diff:'hard',type:'short',
+ q:'Identify the subject, verb type (active/passive), and agent (if any) in: "Mēdus ā dominō timētur et Lydia ab eō amātur."',
+ keywords:['medus','passive','domino','lydia','passive','eo','medo'],
+ hint:'Two clauses, both passive.',
+ exp:'Clause 1: Subject = Mēdus, passive verb timētur, agent = ā dominō (by the master). Clause 2: Subject = Lydia, passive verb amātur, agent = ab eō (by him = Medus).'},
+
+// =============================================
+// GRAMMAR – Cases
+// =============================================
+{unit:'grammar',topic:'Noun Cases',diff:'easy',type:'mcq',
+ q:'Which case is used for the SUBJECT of a Latin sentence?',
+ opts:['Accusative','Genitive','Nominative','Ablative'],
+ ans:2, exp:'The nominative case is used for the subject (the entity performing the action).'},
+
+{unit:'grammar',topic:'Noun Cases',diff:'easy',type:'mcq',
+ q:'Which case is used for the DIRECT OBJECT of a Latin sentence?',
+ opts:['Nominative','Dative','Ablative','Accusative'],
+ ans:3, exp:'The accusative case is used for the direct object (receives the action).'},
+
+{unit:'grammar',topic:'Noun Cases',diff:'easy',type:'mcq',
+ q:'Which case is used to show possession (of)?',
+ opts:['Nominative','Genitive','Dative','Ablative'],
+ ans:1, exp:'The genitive case shows possession. "vīlla Iūliī" = the villa of Julius.'},
+
+{unit:'grammar',topic:'Noun Cases',diff:'easy',type:'mcq',
+ q:'In "circum Rōmam mūrus est", what case is Rōmam?',
+ opts:['Nominative','Genitive','Accusative','Ablative'],
+ ans:2, exp:'"Circum" takes the accusative. "Rōmam" is the accusative of Rōma.'},
+
+{unit:'grammar',topic:'Noun Cases',diff:'medium',type:'mcq',
+ q:'In "Iūlius ā Dāvō portātur", what case is "Dāvō"?',
+ opts:['Nominative','Accusative','Genitive','Ablative'],
+ ans:3, exp:'"Ā/ab" takes the ablative. "Dāvō" is the ablative of Dāvus, marking the agent.'},
+
+{unit:'grammar',topic:'Noun Cases',diff:'medium',type:'mcq',
+ q:'Which preposition takes ONLY the ablative?',
+ opts:['circum','per','ad','ab'],
+ ans:3, exp:'"Ab" (= away from / by) always takes the ablative. "Ad" and "circum" take accusative.'},
+
+{unit:'grammar',topic:'Noun Cases',diff:'medium',type:'mcq',
+ q:'Which preposition takes ONLY the accusative?',
+ opts:['ā','ab','ex','per'],
+ ans:3, exp:'"Per" (through) takes accusative. "Ā/ab" and "ex" take ablative.'},
+
+{unit:'grammar',topic:'Noun Cases',diff:'medium',type:'mcq',
+ q:'In "servī magnōs saccōs portant", what case is "magnōs saccōs"?',
+ opts:['Nominative plural','Accusative plural','Ablative plural','Genitive plural'],
+ ans:1, exp:'"Saccōs" is accusative plural (direct object of portant). "Magnōs" agrees with it (accusative plural masculine).'},
+
+{unit:'grammar',topic:'Noun Cases',diff:'medium',type:'short',
+ q:'Identify the case and function of each underlined word in: "Dāvus [umerīs] [saccōs magnōs] portat."',
+ keywords:['umeris','ablative','saccōs','accusative','object'],
+ hint:'What roles do shoulders and sacks play?',
+ exp:'"Umerīs" = ablative of means (on/with shoulders). "Saccōs magnōs" = accusative plural, direct object of portat.'},
+
+{unit:'grammar',topic:'Noun Cases',diff:'hard',type:'short',
+ q:'Explain the difference in meaning: (a) "Mēdus nummōs habet." vs (b) "Mēdus nummōs dominī in sacculō habet." What case is "dominī" and what does it express?',
+ keywords:['genitiv','possession','master','dominī','of','belonging'],
+ hint:'Genitive of possession.',
+ exp:'"Dominī" is genitive singular (of the master). It expresses possession: the money belonging to the master. (a) Medus has coins; (b) Medus has the master\'s coins (he stole them).'},
+
+// =============================================
+// GRAMMAR – Adjective Agreement
+// =============================================
+{unit:'grammar',topic:'Adjective Agreement',diff:'easy',type:'mcq',
+ q:'Latin adjectives must agree with their noun in gender, number, and…?',
+ opts:['tense','case','conjugation','declension'],
+ ans:1, exp:'Adjectives agree with their noun in gender, number, AND case. This is called adjective agreement.'},
+
+{unit:'grammar',topic:'Adjective Agreement',diff:'easy',type:'mcq',
+ q:'Which form correctly modifies "vīlla" (feminine, nominative singular)?',
+ opts:['magnus','magnum','magna','magnī'],
+ ans:2, exp:'"Vīlla" is feminine nominative singular, so the adjective takes the feminine form: "magna".'},
+
+{unit:'grammar',topic:'Adjective Agreement',diff:'medium',type:'mcq',
+ q:'Which phrase is correctly formed? (saccus = masculine, -us/-ī noun)',
+ opts:['magnus saccus (nom. sg.)','magna saccus','magnum saccus','magnī saccus'],
+ ans:0, exp:'"Saccus" is masculine nominative singular, so "magnus saccus" is correct. The adjective takes masculine nominative singular form.'},
+
+{unit:'grammar',topic:'Adjective Agreement',diff:'medium',type:'mcq',
+ q:'What is the correct form of "bonus" agreeing with "servōs" (accusative plural masculine)?',
+ opts:['bonus','bonōs','bonī','bonum'],
+ ans:1, exp:'Accusative plural masculine adjective ending is "-ōs". So: "servōs bonōs" (good slaves, acc. pl.).'},
+
+{unit:'grammar',topic:'Adjective Agreement',diff:'medium',type:'short',
+ q:'Fill in the blanks with the correct form of "malus": (a) servus ___ (nom. sg. masc.), (b) ancilla ___ (nom. sg. fem.), (c) oppidum ___ (nom. sg. neut.)',
+ keywords:['malus','mala','malum'],
+ hint:'2-1-2 adjective: masculine -us, feminine -a, neuter -um.',
+ exp:'(a) malus – masculine nominative singular. (b) mala – feminine nominative singular. (c) malum – neuter nominative singular.'},
+
+// =============================================
+// GRAMMAR – Verb Conjugations
+// =============================================
+{unit:'grammar',topic:'Verb Conjugations',diff:'easy',type:'mcq',
+ q:'Which ending marks the 3rd person singular active present (he/she/it ___s)?',
+ opts:['-ō','-s','-t','-nt'],
+ ans:2, exp:'"-t" marks 3rd person singular active: "portat" (he carries), "videt" (he sees), etc.'},
+
+{unit:'grammar',topic:'Verb Conjugations',diff:'easy',type:'mcq',
+ q:'Which ending marks the 3rd person PLURAL active present (they ___)?',
+ opts:['-t','-nt','-ntur','-mus'],
+ ans:1, exp:'"-nt" marks 3rd person plural active: "portant" (they carry), "vident" (they see).'},
+
+{unit:'grammar',topic:'Verb Conjugations',diff:'easy',type:'mcq',
+ q:'What conjugation is the verb "portō, portāre" (to carry)?',
+ opts:['1st conjugation','2nd conjugation','3rd conjugation','4th conjugation'],
+ ans:0, exp:'Verbs with infinitive ending "-āre" are 1st conjugation: portō, portāre, portāvī, portātum.'},
+
+{unit:'grammar',topic:'Verb Conjugations',diff:'easy',type:'mcq',
+ q:'What conjugation is "videō, vidēre" (to see)?',
+ opts:['1st','2nd','3rd','4th'],
+ ans:1, exp:'Verbs with infinitive "-ēre" (long e) are 2nd conjugation: videō, vidēre.'},
+
+{unit:'grammar',topic:'Verb Conjugations',diff:'medium',type:'mcq',
+ q:'Give the 3rd person plural passive present of "vocō, vocāre" (to call).',
+ opts:['vocant','vocātur','vocantur','vocāntur'],
+ ans:3, exp:'"Vocāntur" = they are called. 1st conj. 3rd pl. passive: stem + āntur.'},
+
+{unit:'grammar',topic:'Verb Conjugations',diff:'medium',type:'mcq',
+ q:'Which is the correct passive singular of "audiō, audīre" (to hear, 4th conj.)?',
+ opts:['audīt','audiunt','audītur','auditur'],
+ ans:3, exp:'"Auditur" = he/she is heard. 4th conj. 3rd sg. passive: stem + itur. Note: no macron on -i- here in standard form.'},
+
+{unit:'grammar',topic:'Verb Conjugations',diff:'medium',type:'short',
+ q:'Complete the table — give the 3rd sg and 3rd pl passive of: (a) portō (1st), (b) videō (2nd), (c) dūcō (3rd), (d) audiō (4th).',
+ keywords:['portatur','portantur','videtur','videntur','ducitur','ducuntur','auditur','audiuntur'],
+ hint:'Sg: stem+tur or itur; Pl: stem+ntur or iuntur.',
+ exp:'(a) portātur / portantur; (b) vidētur / videntur; (c) dūcitur / dūcuntur; (d) audītur / audiuntur.'},
+
+{unit:'grammar',topic:'Verb Conjugations',diff:'hard',type:'short',
+ q:'Explain why "sūmit" (he takes) is 3rd conjugation and not 2nd, and give the 3rd pl. passive form.',
+ keywords:['3rd','short','sūmere','sumuntur','infinitive','-ere'],
+ hint:'Look at the infinitive ending (short vs long ē).',
+ exp:'"Sūmit" comes from "sūmō, sūmere" – the infinitive has short -ere (not long ēre), marking 3rd conjugation. 3rd pl. passive: "sūmuntur" (they are taken).'},
+
+// =============================================
+// SYNTAX – Prepositions
+// =============================================
+{unit:'syntax',topic:'Prepositions',diff:'easy',type:'mcq',
+ q:'Which prepositions take the ABLATIVE case? (select the group)',
+ opts:['ad, circum, per, ante','ā/ab, ex/ē, cum, procul ā','in, sub (both acc. and abl.)','inter, post, prope'],
+ ans:1, exp:'"Ā/ab" (from/by), "ex/ē" (out of), "cum" (with), and "procul ā" (far from) all take the ablative.'},
+
+{unit:'syntax',topic:'Prepositions',diff:'easy',type:'mcq',
+ q:'"Iūlius ab oppidō ad vīllam it." What does this sentence mean?',
+ opts:['Julius goes from the villa to the town.','Julius goes from the town to the villa.','Julius goes around the town and the villa.','Julius is near the town and the villa.'],
+ ans:1, exp:'"Ab oppidō" = from the town (ablative); "ad vīllam" = to the villa (accusative). Julius goes from the town to his villa.'},
+
+{unit:'syntax',topic:'Prepositions',diff:'medium',type:'mcq',
+ q:'Choose the correct form: "Quīntus cum ___ ambulat." (Mēdus)',
+ opts:['Mēdum','Mēdō','Mēdī','Mēde'],
+ ans:1, exp:'"Cum" takes the ablative. "Mēdō" is the ablative of "Mēdus".'},
+
+{unit:'syntax',topic:'Prepositions',diff:'medium',type:'mcq',
+ q:'Choose the correct form: "Iūlius ā ___ portātur." (Dāvus)',
+ opts:['Dāvum','Dāvō','Dāvī','Dāve'],
+ ans:1, exp:'"Ā/ab" takes the ablative. "Dāvō" is the ablative of Dāvus. This marks Davus as the agent.'},
+
+{unit:'syntax',topic:'Prepositions',diff:'medium',type:'mcq',
+ q:'Choose the correct form: "Ōstia est prope ___." (Rōma)',
+ opts:['Rōmā','Rōmam','Rōmae','Rōmō'],
+ ans:1, exp:'"Prope" takes the accusative. "Rōmam" is the accusative of Rōma. Ostia is near Rome (port city).'},
+
+{unit:'syntax',topic:'Prepositions',diff:'medium',type:'mcq',
+ q:'Select the correct sentence: "The slaves walk around the town."',
+ opts:['Servī circum oppidō ambulant.','Servī circum oppidum ambulant.','Servī ā oppidō ambulant.','Servī per oppidō ambulant.'],
+ ans:1, exp:'"Circum" takes accusative: "circum oppidum". Option A wrongly uses ablative "-ō".'},
+
+{unit:'syntax',topic:'Prepositions',diff:'medium',type:'mcq',
+ q:'"Servī ab oppidō ad vīllam ambulant." = ?',
+ opts:['The slaves walk from the villa to the town.','The slaves walk around the town.','The slaves walk from the town to the villa.','The slaves carry bags from the town.'],
+ ans:2, exp:'"Ab oppidō" = from the town; "ad vīllam" = to the villa. The slaves walk from the town to the villa.'},
+
+{unit:'syntax',topic:'Prepositions',diff:'hard',type:'short',
+ q:'Correct the errors: "Quīntus cum Mēdum in viam ambulat. Iūlius ā Dāvum portātur."',
+ keywords:['medo','viā','davo','ablative'],
+ hint:'cum and ā/ab both take ablative.',
+ exp:'"Cum" and "ā" both require ablative. Correct: "Quīntus cum Mēdō in viā ambulat. Iūlius ā Dāvō portātur."'},
+
+// =============================================
+// TEXT – Chapter 6 Comprehension (from actual texts)
+// =============================================
+{unit:'text',topic:'Text A – Via & Oppida',diff:'easy',type:'mcq',
+ extract:'circum oppida mūrī sunt. circum Rōmam est mūrus antīquus. in mūrō Rōmānō duodecim portae sunt.',
+ q:'According to Text A: How many gates are in the Roman wall?',
+ opts:['Seven','Ten','Twelve','Four'],
+ ans:2, exp:'"In mūrō Rōmānō duodecim portae sunt" = In the Roman wall there are twelve gates.'},
+
+{unit:'text',topic:'Text A – Via & Oppida',diff:'easy',type:'mcq',
+ extract:'porta prīma Rōmāna est porta Capēna.',
+ q:'What is the name of the first Roman gate?',
+ opts:['Porta Latina','Porta Appia','Porta Capēna','Porta Flāminia'],
+ ans:2, exp:'"Porta prīma Rōmāna est porta Capēna" = The first Roman gate is the Capene Gate.'},
+
+{unit:'text',topic:'Text A – Via & Oppida',diff:'easy',type:'mcq',
+ extract:'circum oppidum Tūsculum mūrus nōn tam longus est quam circum Rōmam.',
+ q:'Compared to Rome\'s wall, the wall around Tusculum is…',
+ opts:['longer','the same length','shorter / not as long','much older'],
+ ans:2, exp:'"Nōn tam longus est quam" = not as long as. The wall around Tusculum is not as long as the one around Rome.'},
+
+{unit:'text',topic:'Text A – Via & Oppida',diff:'medium',type:'short',
+ extract:'vīlla Iūliī est prope Tūsculum. ab oppidō Tūsculō ad vīllam Iūliī nōn longa via est.',
+ q:'Translate: "ab oppidō Tūsculō ad vīllam Iūliī nōn longa via est."',
+ keywords:['town','tusculum','villa','julius','not long','road','short'],
+ hint:'ab = from, ad = to, nōn longa = not long.',
+ exp:'"From the town Tusculum to the villa of Julius the road is not long." (i.e., the villa is close to Tusculum.)'},
+
+{unit:'text',topic:'Text B – Servī Bonī et Malī',diff:'easy',type:'mcq',
+ extract:'Iūlius sōlus nōn est, nam quattuor servī apud eum sunt.',
+ q:'Why is Julius not alone?',
+ opts:['His wife is with him.','Four slaves are with him.','Cornelius is with him.','Medus is with him.'],
+ ans:1, exp:'"Nam quattuor servī apud eum sunt" = For four slaves are with him.'},
+
+{unit:'text',topic:'Text B – Servī Bonī et Malī',diff:'easy',type:'mcq',
+ extract:'Mēdus nōn est apud dominum, nam is dominum īrātum timet.',
+ q:'Why is Medus not with his master?',
+ opts:['He is sick.','He is lost.','He fears his angry master.','He has gone to Rome.'],
+ ans:2, exp:'"Nam is dominum īrātum timet" = For he fears his angry master.'},
+
+{unit:'text',topic:'Text B – Servī Bonī et Malī',diff:'easy',type:'mcq',
+ extract:'Mēdus est malus servus quī nummōs dominī in sacculō suō habet.',
+ q:'What has Medus done to deserve being called a bad slave?',
+ opts:['He has run away.','He has the master\'s money in his own purse.','He has beaten another slave.','He has broken a litter.'],
+ ans:1, exp:'"Nummōs dominī in sacculō suō habet" = He has the master\'s coins in his own purse (he stole them).'},
+
+{unit:'text',topic:'Text B – Servī Bonī et Malī',diff:'medium',type:'mcq',
+ extract:'dominus servōs malōs baculō verberat; itaque servī malī dominum et baculum eius timent.',
+ q:'Translate "baculō" – what case is it and what does it express?',
+ opts:['Accusative – direct object','Ablative – means (with a stick)','Genitive – possession','Nominative – subject'],
+ ans:1, exp:'"Baculō" is ablative singular. Here it is ablative of means/instrument: "verberat baculō" = beats with a stick. No preposition needed for ablative of means.'},
+
+{unit:'text',topic:'Text B – Servī Bonī et Malī',diff:'medium',type:'mcq',
+ extract:'Dāvus amīcus Mēdī nōn est, nam servus bonus et servus malus nōn amīcī, sed inimīcī sunt.',
+ q:'Why is Davus not the friend of Medus?',
+ opts:['Because Medus is in Rome.','Because a good slave and a bad slave are not friends but enemies.','Because Julius forbids it.','Because Davus is afraid of Medus.'],
+ ans:1, exp:'"Nam servus bonus et servus malus nōn amīcī, sed inimīcī sunt" = For a good slave and a bad slave are not friends, but enemies.'},
+
+{unit:'text',topic:'Text C – Cornēlius & Iūlius',diff:'easy',type:'mcq',
+ extract:'Cornēlius in equō est. equus quī Cornēlium vehit pulcher est.',
+ q:'How is Cornelius travelling?',
+ opts:['In a litter','On foot','On horseback','In a cart'],
+ ans:2, exp:'"Cornēlius in equō est" = Cornelius is on a horse. "Equō vehitur" = he rides on horseback.'},
+
+{unit:'text',topic:'Text C – Cornēlius & Iūlius',diff:'easy',type:'mcq',
+ extract:'servī quī lectīcam portant fessī sunt. dominus autem fessus nōn est, nam is nōn ambulat.',
+ q:'Why is the master not tired while the slaves are?',
+ opts:['He is stronger.','He has rested.','He does not walk (he is carried).','He is riding a horse.'],
+ ans:2, exp:'"Dominus fessus nōn est, nam is nōn ambulat" = The master is not tired because he does not walk. He is being carried in the litter.'},
+
+{unit:'text',topic:'Text C – Cornēlius & Iūlius',diff:'medium',type:'mcq',
+ extract:'fessī sunt Syrus et Lēander, nam iī duōs magnōs saccōs umerīs portant, neque vacuī sunt saccī!',
+ q:'Who are the two slaves mentioned as tired? Why?',
+ opts:['Davus and Ursus – they carry the litter','Syrus and Leander – they carry two large bags on their shoulders','Medus and Davus – they ran away','Ursus and Syrus – they carry Cornelius'],
+ ans:1, exp:'"Fessī sunt Syrus et Lēander, nam iī duōs magnōs saccōs umerīs portant" = Syrus and Leander are tired, for they carry two large bags on their shoulders.'},
+
+{unit:'text',topic:'Text C – Cornēlius & Iūlius',diff:'medium',type:'mcq',
+ extract:'Iūlius ab Ursō et Dāvō portātur.',
+ q:'Translate "Iūlius ab Ursō et Dāvō portātur."',
+ opts:['Julius carries Ursus and Davus.','Julius and Ursus are carried by Davus.','Julius is carried by Ursus and Davus.','Ursus and Davus go away from Julius.'],
+ ans:2, exp:'Passive: "Julius is carried by Ursus and Davus." Ursus and Davus are in the ablative (ab Ursō et Dāvō) as agents.'},
+
+{unit:'text',topic:'Text D – Mēdus et Lydia',diff:'easy',type:'mcq',
+ extract:'Iūlius prope vīllam suam est. Mēdus autem procul ā vīllā Iūliī abest.',
+ q:'Where is Medus at the start of the passage?',
+ opts:['Near the villa','In the villa','Far away from the villa','Inside Rome'],
+ ans:2, exp:'"Mēdus procul ā vīllā Iūliī abest" = Medus is far away from Julius\'s villa.'},
+
+{unit:'text',topic:'Text D – Mēdus et Lydia',diff:'easy',type:'mcq',
+ extract:'Mēdus prope Rōmam est; iam mūrī Rōmānī ab eō videntur et porta Capēna.',
+ q:'What can Medus see from where he is?',
+ opts:['The villa of Julius','The sea','The Roman walls and the Capene Gate','The road to Tusculum'],
+ ans:2, exp:'"Mūrī Rōmānī ab eō videntur et porta Capēna" = The Roman walls and the Capene Gate are seen by him.'},
+
+{unit:'text',topic:'Text D – Mēdus et Lydia',diff:'easy',type:'mcq',
+ extract:'cūr Rōmam venit Mēdus? Rōmam it, quia Lydia Rōmae habitat.',
+ q:'Why is Medus going to Rome?',
+ opts:['To buy food','To find work','Because Lydia lives in Rome','To avoid his master'],
+ ans:2, exp:'"Rōmam it, quia Lydia Rōmae habitat" = He goes to Rome because Lydia lives in Rome. Note: "Rōmam" = to Rome (acc. of motion toward); "Rōmae" = in Rome (locative).'},
+
+{unit:'text',topic:'Text D – Mēdus et Lydia',diff:'medium',type:'mcq',
+ extract:'Lydia amīca eius est: Mēdus Lydiam amat et ab eā amātur.',
+ q:'What is the relationship between Medus and Lydia?',
+ opts:['She is his sister.','She is his enemy.','She is his girlfriend (they love each other).','She is his master\'s wife.'],
+ ans:2, exp:'"Mēdus Lydiam amat et ab eā amātur" = Medus loves Lydia and is loved by her. They are each other\'s amīca/amīcus.'},
+
+{unit:'text',topic:'Text D – Mēdus et Lydia',diff:'medium',type:'mcq',
+ extract:'Mēdus Rōmam vocātur ab amīcā suā, quae fēmina est pulchra et proba.',
+ q:'How is Lydia described?',
+ opts:['Old and wise','Beautiful and virtuous/honest','Young and poor','Angry and dangerous'],
+ ans:1, exp:'"Fēmina pulchra et proba" = a beautiful and virtuous/honest woman.'},
+
+{unit:'text',topic:'Text D – Mēdus et Lydia',diff:'medium',type:'mcq',
+ extract:'itaque fessus nōn est et laetus cantat.',
+ q:'What does Medus do because he is happy (at end of Ch.6)?',
+ opts:['He runs.','He sleeps.','He sings.','He returns to the master.'],
+ ans:2, exp:'"Laetus cantat" = He sings happily. He is not tired and sings joyfully.'},
+
+{unit:'text',topic:'Text D – Mēdus et Lydia',diff:'hard',type:'short',
+ extract:'Mēdus Rōmam vocātur ab amīcā suā, quae fēmina est pulchra et proba. itaque fessus nōn est et laetus cantat.',
+ q:'Translate the full extract into English.',
+ keywords:['medus','called','rome','friend','woman','beautiful','virtuous','tired','happy','sings'],
+ hint:'vocātur = is called/summoned; quae = who (relative pronoun); itaque = and so.',
+ exp:'"Medus is called/summoned to Rome by his girlfriend, who is a beautiful and virtuous woman. And so he is not tired and sings happily."'},
+
+// =============================================
+// GRAMMAR – Question Words (Interrogatives)
+// =============================================
+{unit:'grammar',topic:'Question Words',diff:'easy',type:'mcq',
+ q:'What does "ubi" mean?',
+ opts:['who','what','where','when'],
+ ans:2, exp:'"Ubi" = where. "Ubi est Iūlius?" = Where is Julius? Answer with a place.'},
+
+{unit:'grammar',topic:'Question Words',diff:'easy',type:'mcq',
+ q:'What does "quis" mean?',
+ opts:['where','what','who','why'],
+ ans:2, exp:'"Quis" = who (singular). "Quis est pulcher?" = Who is handsome?'},
+
+{unit:'grammar',topic:'Question Words',diff:'easy',type:'mcq',
+ q:'What does "quī" (plural) mean?',
+ opts:['where','who (plural)','what','how many'],
+ ans:1, exp:'"Quī" = who (plural). "Quī sunt fessī?" = Who are tired? (multiple people expected in answer).'},
+
+{unit:'grammar',topic:'Question Words',diff:'easy',type:'mcq',
+ q:'What does "quid" mean?',
+ opts:['who','where','what','why'],
+ ans:2, exp:'"Quid" = what. "Quid servī portant?" = What do the slaves carry?'},
+
+{unit:'grammar',topic:'Question Words',diff:'easy',type:'mcq',
+ q:'What does "cūr" mean?',
+ opts:['where','how','when','why'],
+ ans:3, exp:'"Cūr" = why. "Cūr Rōmam venit Mēdus?" = Why does Medus come to Rome?'},
+
+{unit:'grammar',topic:'Question Words',diff:'medium',type:'mcq',
+ q:'What does "quem" mean? (accusative of quis)',
+ opts:['who (nominative)','which (nominative)','whom (accusative)','whose (genitive)'],
+ ans:2, exp:'"Quem" = whom (accusative of quis). "Quem Mēdus timet?" = Whom does Medus fear?'},
+
+{unit:'grammar',topic:'Question Words',diff:'medium',type:'short',
+ q:'Write the Latin question for each answer: (a) "Iūlius in lectīcā est." (b) "Servī saccōs portant."',
+ keywords:['ubi','quid','quis','iuLius','servi'],
+ hint:'Ask "where" for place; "what" for thing carried.',
+ exp:'(a) "Ubi est Iūlius?" = Where is Julius? (b) "Quid servī portant?" = What do the slaves carry?'},
+
+// =============================================
+// GRAMMAR – Relative Clauses
+// =============================================
+{unit:'grammar',topic:'Relative Clauses',diff:'medium',type:'mcq',
+ q:'In "equus quī Cornēlium vehit pulcher est", what does "quī" refer to?',
+ opts:['Cornelius','equus','the road','Julius'],
+ ans:1, exp:'"Quī" = who/which, referring back to "equus" (the horse). The horse that carries Cornelius is beautiful.'},
+
+{unit:'grammar',topic:'Relative Clauses',diff:'medium',type:'mcq',
+ q:'In "Mēdus est servus malus quī nummōs dominī habet", translate the relative clause.',
+ opts:['who fears his master','who has the master\'s money','who runs away','who sings happily'],
+ ans:1, exp:'"Quī nummōs dominī habet" = who has the master\'s money. This relative clause describes what makes Medus a bad slave.'},
+
+{unit:'grammar',topic:'Relative Clauses',diff:'medium',type:'mcq',
+ q:'"Lydia, quae fēmina est pulchra et proba" – what gender is "quae"?',
+ opts:['Masculine','Feminine','Neuter','Could be any'],
+ ans:1, exp:'"Quae" is the feminine form of the relative pronoun quī/quae/quod. It agrees with "Lydia" which is feminine.'},
+
+{unit:'grammar',topic:'Relative Clauses',diff:'hard',type:'short',
+ q:'Combine into one sentence using a relative clause: "Servī portant lectīcam. Servī sunt fessī."',
+ keywords:['qui','servi','leticam','portant','fessi'],
+ hint:'"qui" replaces the second "servī".',
+ exp:'"Servī quī lectīcam portant fessī sunt." = The slaves who carry the litter are tired. The relative pronoun "quī" (nom. pl. masc.) refers back to "servī".'},
+
+// =============================================
+// GRAMMAR – Locative
+// =============================================
+{unit:'grammar',topic:'Locative Case',diff:'medium',type:'mcq',
+ q:'In "Lydia Rōmae habitat", what case is "Rōmae"?',
+ opts:['Genitive','Dative','Locative','Ablative'],
+ ans:2, exp:'"Rōmae" uses the locative case, meaning "in Rome". City names use the locative (not "in" + ablative) to express location.'},
+
+{unit:'grammar',topic:'Locative Case',diff:'medium',type:'mcq',
+ q:'What does "Tūsculī habitat" mean?',
+ opts:['He goes to Tusculum','He lives in Tusculum','He comes from Tusculum','He goes around Tusculum'],
+ ans:1, exp:'"Tūsculī" is the locative of Tusculum. "Habitat Tūsculī" = He lives in Tusculum. Cornelius lives there.'},
+
+{unit:'grammar',topic:'Locative Case',diff:'hard',type:'mcq',
+ q:'Which sentence correctly expresses "Medus is in Rome"?',
+ opts:['Mēdus in Rōmā est.','Mēdus Rōmam est.','Mēdus Rōmae est.','Mēdus ad Rōmam est.'],
+ ans:2, exp:'"Rōmae" is the locative. For city names, Latin uses the locative (not "in" + ablative) for "in [city]". "Mēdus Rōmae est" = Medus is in Rome.'},
+
+// =============================================
+// GRAMMAR – Motion to/from cities
+// =============================================
+{unit:'grammar',topic:'Motion to/from',diff:'medium',type:'mcq',
+ q:'How do you say "he goes TO Rome" in Latin?',
+ opts:['Rōmā it.','Rōmae it.','Rōmam it.','ad Rōma it.'],
+ ans:2, exp:'"Rōmam it" – for motion toward a city, use the accusative WITHOUT a preposition. "Rōmam" = (to) Rome.'},
+
+{unit:'grammar',topic:'Motion to/from',diff:'medium',type:'mcq',
+ q:'How do you say "he comes FROM Rome"?',
+ opts:['Rōmam venit.','Rōmae venit.','Rōmā venit.','ab Rōma venit.'],
+ ans:2, exp:'"Rōmā venit" – for motion away from a city, use the ablative WITHOUT a preposition. "Rōmā" = from Rome.'},
+
+{unit:'grammar',topic:'Motion to/from',diff:'hard',type:'short',
+ q:'Explain using Latin examples: the three ways city names are used differently from ordinary nouns for (a) location, (b) motion toward, (c) motion away from.',
+ keywords:['locative','romae','accusative','romam','ablative','roma','without','preposition'],
+ hint:'No prepositions for city names — just case endings.',
+ exp:'(a) Location: locative case – "Rōmae habitat" (lives in Rome). (b) Motion toward: accusative – "Rōmam it" (goes to Rome). (c) Motion away: ablative – "Rōmā venit" (comes from Rome). Unlike regular nouns, no prepositions are used with city names.'},
+
+// =============================================
+// DERIVATIVES & LATIN→ENGLISH CONNECTIONS
+// =============================================
+{unit:'vocab',topic:'English Derivatives',diff:'medium',type:'mcq',
+ q:'Which English word derives from Latin "dominus" (master)?',
+ opts:['dominate / domination','donut','domain only','deliver'],
+ ans:0, exp:'"Dominus" → English "dominate", "dominion", "domain", "predominate". The root dom- relates to mastery/control.'},
+
+{unit:'vocab',topic:'English Derivatives',diff:'medium',type:'mcq',
+ q:'Which English word derives from Latin "vīlla" (country house)?',
+ opts:['vile','villain','village and villa','voltage'],
+ ans:2, exp:'"Vīlla" → English "villa" (country house), "village" (settlement of villas), and even "villain" (one who lives in a villa = peasant, later negative).'},
+
+{unit:'vocab',topic:'English Derivatives',diff:'medium',type:'mcq',
+ q:'Which English word derives from Latin "pulcher" (beautiful)?',
+ opts:['pulse','pulchritude','pulley','pummel'],
+ ans:1, exp:'"Pulcher" → English "pulchritude" (beauty). Not commonly used but a direct descendant.'},
+
+{unit:'vocab',topic:'English Derivatives',diff:'medium',type:'mcq',
+ q:'Which English word derives from Latin "cantō" (I sing)?',
+ opts:['can','cantata / canticle','cape','cancel'],
+ ans:1, exp:'"Cantō, cantāre" → English "cantata", "canticle", "chant" (via French), "incantation".'},
+
+{unit:'vocab',topic:'English Derivatives',diff:'medium',type:'mcq',
+ q:'Which English word derives from Latin "malus" (bad)?',
+ opts:['male','mall','malicious / malevolent','mallet'],
+ ans:2, exp:'"Malus" → English "malicious", "malevolent", "malign", "malfunction", "malaria" (bad air).'},
+
+{unit:'vocab',topic:'English Derivatives',diff:'medium',type:'mcq',
+ q:'Which English word derives from Latin "habitō" (I live/dwell)?',
+ opts:['happy','habit / habitat','have','harm'],
+ ans:1, exp:'"Habitō" → English "habitat" (dwelling place), "habitation", "inhabit", "habit" (customary dwelling practice).'},
+
+{unit:'vocab',topic:'English Derivatives',diff:'medium',type:'mcq',
+ q:'"Fēmina" (woman) → which English word?',
+ opts:['fence','feminine / female','fanatic','familiar'],
+ ans:1, exp:'"Fēmina" → English "feminine", "female", "feminist". All relate to womanhood.'},
+
+{unit:'vocab',topic:'English Derivatives',diff:'hard',type:'short',
+ q:'Give the English derivative AND meaning for each: (a) servus, (b) equus, (c) porta, (d) via.',
+ keywords:['serv','servant','equest','equestrian','portal','port','via','viaduct'],
+ hint:'Think of English words with these Latin roots.',
+ exp:'(a) servus → servant, service, servile. (b) equus → equestrian, equine. (c) porta → portal, port, porthole. (d) via → viaduct, via (preposition in English).'},
+
+// =============================================
+// COMPREHENSIVE – Mixed translation
+// =============================================
+{unit:'text',topic:'Translation Practice',diff:'medium',type:'short',
+ q:'Translate into English: "Mēdus et Lydia per ōstium vīllae intrant."',
+ keywords:['medus','lydia','through','door','villa','enter'],
+ hint:'per = through, ōstium = door/entrance, intrant = they enter.',
+ exp:'"Medus and Lydia enter through the door of the villa." Per (through) + accusative; ōstium vīllae = door of the villa (genitive).'},
+
+{unit:'text',topic:'Translation Practice',diff:'medium',type:'short',
+ q:'Translate into English: "Dāvus est ante Iūlium, post Iūlium est Ursus."',
+ keywords:['davus','front','julius','ursus','behind'],
+ hint:'ante = in front of, post = behind.',
+ exp:'"Davus is in front of Julius; behind Julius is Ursus." This describes the procession order: Davus → Julius (in litter) → Ursus.'},
+
+{unit:'text',topic:'Translation Practice',diff:'medium',type:'short',
+ q:'Translate into English: "dominus ā servō malō timētur."',
+ keywords:['master','feared','bad','slave','passive'],
+ hint:'Passive sentence – who is doing the fearing?',
+ exp:'"The master is feared by the bad slave." Passive: dominus = subject (is feared), ā servō malō = agent (by the bad slave).'},
+
+{unit:'text',topic:'Translation Practice',diff:'hard',type:'short',
+ q:'Translate into English: "Cornēlius in equō est. equus quī Cornēlium vehit pulcher est. Iūlius et Cornēlius ad vīllās suās eunt."',
+ keywords:['cornelius','horse','beautiful','carries','julius','villas','going'],
+ hint:'Three sentences. vehit = carries/conveys; suās = their own.',
+ exp:'"Cornelius is on horseback. The horse which carries Cornelius is beautiful. Julius and Cornelius are going to their (own) villas."'},
+
+{unit:'text',topic:'Translation Practice',diff:'hard',type:'short',
+ q:'Translate into Latin: "The good slave does not fear the master, but the bad slaves are beaten with a stick."',
+ keywords:['servus','bonus','dominum','timet','servi','mali','baculō','verberantur'],
+ hint:'Bonus servus; mali servi; passive for "are beaten".',
+ exp:'"Servus bonus dominum nōn timet, sed servī malī baculō verberantur." Note: baculō = ablative of means (with a stick); verberantur = 3rd pl. passive.'},
+
+// =============================================
+// GRAMMAR – Forms & Paradigms
+// =============================================
+{unit:'syntax',topic:'Noun Declensions',diff:'medium',type:'mcq',
+ q:'"Saccus" declines like which pattern? (1st, 2nd, or 3rd declension?)',
+ opts:['1st (puella pattern, -a/-ae)','2nd (servus pattern, -us/-ī)','3rd (various stems)','4th (portus pattern)'],
+ ans:1, exp:'"Saccus" is a 2nd declension masculine noun (like servus, dominus, equus): -us (nom.), -ī (gen.), -ō (dat./abl.), -um (acc.), -e (voc.).'},
+
+{unit:'syntax',topic:'Noun Declensions',diff:'medium',type:'mcq',
+ q:'What is the genitive singular of "dominus"?',
+ opts:['dominī','dominum','dominō','dominōrum'],
+ ans:0, exp:'"Dominī" is genitive singular of dominus (2nd decl.). "Nummōs dominī" = coins of the master.'},
+
+{unit:'syntax',topic:'Noun Declensions',diff:'medium',type:'mcq',
+ q:'What is the ablative singular of "via" (1st decl. fem.)?',
+ opts:['via','viam','viae','viā'],
+ ans:3, exp:'"Viā" (with macron) is ablative singular of 1st declension "via". E.g., "in viā" = on/in the road.'},
+
+{unit:'syntax',topic:'Noun Declensions',diff:'medium',type:'mcq',
+ q:'What is the accusative plural of "murus" (2nd decl.)?',
+ opts:['mūrī','mūrum','mūrōs','mūribus'],
+ ans:2, exp:'"Mūrōs" is the accusative plural of mūrus. 2nd decl. accusative plural: -ōs.'},
+
+{unit:'syntax',topic:'Noun Declensions',diff:'hard',type:'short',
+ q:'Decline "equus" (m.) in the singular: give nominative, genitive, dative, accusative, ablative.',
+ keywords:['equus','equi','equo','equum','equo'],
+ hint:'2nd declension masculine: -us, -ī, -ō, -um, -ō.',
+ exp:'Nom: equus | Gen: equī | Dat: equō | Acc: equum | Abl: equō. (Standard 2nd declension masculine pattern)'},
+
+// =============================================
+// CULTURE – Roman roads & geography
+// =============================================
+{unit:'text',topic:'Roman Culture & Geography',diff:'easy',type:'mcq',
+ q:'What was the "Via Appia"?',
+ opts:['A Roman aqueduct','The first great Roman road (Rome to Brundisium)','A gate in the Roman wall','A river near Rome'],
+ ans:1, exp:'The Via Appia was the first and most important Roman road, running from Rome south to Brundisium (modern Brindisi) on the heel of Italy.'},
+
+{unit:'text',topic:'Roman Culture & Geography',diff:'easy',type:'mcq',
+ q:'What was a "lectīca" used for in ancient Rome?',
+ opts:['Writing letters','Carrying wealthy passengers','Storing grain','Drinking wine'],
+ ans:1, exp:'A lectīca was a litter or sedan chair carried by slaves, used to transport wealthy Romans. Julius is carried in one in Ch.6.'},
+
+{unit:'text',topic:'Roman Culture & Geography',diff:'medium',type:'mcq',
+ q:'The "Via Flāminia" ran between which two cities?',
+ opts:['Rome and Tusculum','Rome and Capua','Rome and Ariminum (Rimini)','Rome and Ostia'],
+ ans:2, exp:'"Via Flāminia est inter Rōmam et Arīminum" – from the exam question bank. The Via Flaminia ran north from Rome to Ariminum.'},
+
+{unit:'text',topic:'Roman Culture & Geography',diff:'medium',type:'mcq',
+ q:'Why might a master beat a slave with a "baculum" according to LLPSI?',
+ opts:['For being too fast','For being a bad slave (doing wrong things)','For resting','For singing'],
+ ans:1, exp:'"Dominus servōs malōs baculō verberat" = The master beats bad slaves with a stick. A bad slave like Medus who steals money risks this punishment.'},
+
+{unit:'text',topic:'Roman Culture & Geography',diff:'medium',type:'mcq',
+ q:'What was the "Porta Capēna"?',
+ opts:['A gate at the end of the Via Appia where it left Rome','A bridge over the Tiber','A market place','An aqueduct entrance'],
+ ans:0, exp:'The Porta Capena was the city gate at the southern end of the Via Appia (also near the Via Latina). You entered Rome from the south through this gate.'},
+
+// =============================================
+// HARD – Analytical & forms
+// =============================================
+{unit:'grammar',topic:'Sentence Analysis',diff:'hard',type:'short',
+ q:'In "Syra ā Dāvō amātur", identify: (a) subject, (b) verb with voice and meaning, (c) agent.',
+ keywords:['syra','subject','passive','loved','amatur','davo','agent'],
+ hint:'Who is subject? What does amātur mean? Who is doing the loving?',
+ exp:'(a) Subject: Syra (nominative). (b) Verb: amātur – 3rd sg. passive = "is loved". (c) Agent: ā Dāvō = "by Davus" (ablative of agent).'},
+
+{unit:'grammar',topic:'Sentence Analysis',diff:'hard',type:'short',
+ q:'Analyse fully: "fīliōs suōs Aemilia audit." – subject, object (with case reason), verb.',
+ keywords:['aemilia','subject','filios','accusative','object','audit','hears'],
+ hint:'Latin word order is flexible – look at endings.',
+ exp:'Subject: Aemilia (nominative). Object: fīliōs suōs = "her own sons" (accusative plural, 2nd decl. masc.). Verb: audit = "hears" (3rd sg. active, 4th conj.). Translation: Aemilia hears her own sons.'},
+
+{unit:'grammar',topic:'Sentence Analysis',diff:'hard',type:'short',
+ q:'What grammatical feature allows Latin to say "Portant servī saccōs" and "Saccōs servī portant" with the same meaning? Explain.',
+ keywords:['word order','free','endings','case','inflected','accusative','nominative'],
+ hint:'Think about what determines subject/object in Latin vs English.',
+ exp:'Latin is an inflected language – word order is flexible because case endings (not position) determine grammatical function. "Saccōs" (accusative) is always the object; "servī" (nominative) is always the subject, regardless of word order. In English, word order is fixed: "slaves carry bags" ≠ "bags carry slaves".'},
+
+]; // END ALL_QUESTIONS
+
+
+// ============================================================
+// STATE & LOGIC
+// ============================================================
+let selectedUnit = 'all';
+let selectedDiff = 'easy';
+const state = {
+  queue: [], repeatPool: [], current: null, currentIdx: 0,
+  correct: 0, wrong: 0, answered: 0, answered_q: false,
+  timerInterval: null, timeLeft: 60, maxTime: 60,
+  topicStats: {}, missedQs: [], totalOriginal: 0
+};
+
+function toggleUnit(u) {
+  selectedUnit = u;
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+function setDiff(d) {
+  selectedDiff = d;
+  ['easy','medium','hard'].forEach(x => document.getElementById('dc-'+x).classList.remove('active'));
+  document.getElementById('dc-'+d).classList.add('active');
+}
+
+function startQuiz() {
+  let pool = ALL_QUESTIONS.filter(q => {
+    const unitOk = selectedUnit === 'all' || q.unit === selectedUnit;
+    const diffMap = { easy: ['easy'], medium: ['easy','medium'], hard: ['easy','medium','hard'] };
+    return unitOk && diffMap[selectedDiff].includes(q.diff);
+  });
+  if (pool.length === 0) { alert('No questions match. Try different filters.'); return; }
+  state.queue = shuffle(pool);
+  state.totalOriginal = pool.length;
+  state.maxTime = selectedDiff === 'easy' ? 60 : selectedDiff === 'medium' ? 40 : 20;
+  document.getElementById('q-total').textContent = pool.length;
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  nextQuestion();
+}
+
+function nextQuestion() {
+  document.getElementById('feedback-area').style.display = 'none';
+  document.getElementById('short-area').style.display = 'none';
+  document.getElementById('mcq-area').innerHTML = '';
+  document.getElementById('q-extract').style.display = 'none';
+  state.answered_q = false;
+  clearTimer();
+
+  let q;
+  if (state.currentIdx < state.queue.length) {
+    q = state.queue[state.currentIdx++];
+  } else if (state.repeatPool.length > 0) {
+    const rep = shuffle(state.repeatPool);
+    state.repeatPool = [];
+    state.queue = rep;
+    state.currentIdx = 1;
+    q = rep[0];
+  } else {
+    showResults(); return;
+  }
+
+  state.current = q;
+  document.getElementById('q-num').textContent = state.answered + 1;
+
+  // badges
+  const unitColors = { grammar:'grammar', vocab:'vocab', text:'text', syntax:'syntax' };
+  const ub = document.getElementById('q-unit-badge');
+  ub.className = 'badge ' + (unitColors[q.unit] || 'grammar');
+  ub.textContent = capitalize(q.unit);
+  const db = document.getElementById('q-diff-badge');
+  db.className = 'badge ' + q.diff;
+  db.textContent = q.diff === 'easy' ? 'Facilis' : q.diff === 'medium' ? 'Mediocris' : 'Difficilis';
+  const tb = document.getElementById('q-type-badge');
+  tb.textContent = q.type === 'mcq' ? 'MCQ' : 'Short Answer';
+
+  document.getElementById('q-topic').textContent = q.topic;
+  document.getElementById('q-text').textContent = q.q;
+
+  if (q.extract) {
+    const ex = document.getElementById('q-extract');
+    ex.style.display = 'block';
+    ex.textContent = q.extract;
+  }
+
+  if (q.type === 'mcq') {
+    const area = document.getElementById('mcq-area');
+    const shuffledOpts = q.opts.map((o, i) => ({o, i}));
+    // don't shuffle opts for MCQ to preserve ans index
+    q.opts.forEach((opt, i) => {
+      const b = document.createElement('button');
+      b.className = 'opt-btn';
+      b.textContent = opt;
+      b.onclick = () => selectMCQ(i, q);
+      area.appendChild(b);
+    });
+  } else {
+    document.getElementById('short-area').style.display = 'flex';
+    document.getElementById('short-input').value = '';
+    document.getElementById('short-input').disabled = false;
+    document.getElementById('hint-text').textContent = q.hint ? 'Hint: ' + q.hint : '';
+  }
+
+  startTimer();
+  updateProgress();
+}
+
+function selectMCQ(idx, q) {
+  if (state.answered_q) return;
+  state.answered_q = true;
+  clearTimer();
+  const btns = document.querySelectorAll('.opt-btn');
+  btns.forEach(b => b.disabled = true);
+  const correct = idx === q.ans;
+  btns[idx].classList.add(correct ? 'correct' : 'wrong');
+  if (!correct) btns[q.ans].classList.add('correct');
+  recordAnswer(correct, q);
+  showFeedback(correct, q.exp);
+}
+
+// Levenshtein distance
+function levenshtein(a, b) {
+  const m = a.length, n = b.length;
+  const dp = Array.from({length: m+1}, (_, i) => [i, ...Array(n).fill(0)]);
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = a[i-1]===b[j-1] ? dp[i-1][j-1] : 1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+  return dp[m][n];
+}
+
+// Strip macrons so "portatur" matches "portātur"
+function normLatin(s) {
+  return s.toLowerCase()
+    .replace(/[āàáâä]/g,'a').replace(/[ēèéêë]/g,'e')
+    .replace(/[īìíîï]/g,'i').replace(/[ōòóôö]/g,'o')
+    .replace(/[ūùúûü]/g,'u');
+}
+
+// True if answer contains keyword within edit-distance tolerance (typo-tolerant)
+function fuzzyMatch(keyword, answerText) {
+  const kw  = normLatin(keyword);
+  const ans = normLatin(answerText);
+  if (ans.includes(kw)) return true;                            // exact substring — fast path
+  const tol = kw.length >= 7 ? 2 : kw.length >= 4 ? 1 : 0;   // short words must be exact
+  if (tol === 0) return false;
+  for (const word of ans.split(/[\s,;.!?()\/]+/)) {
+    if (Math.abs(word.length - kw.length) <= tol && levenshtein(word, kw) <= tol) return true;
+  }
+  // Sliding-window check catches extra/missing letters mid-word
+  for (let len = Math.max(1, kw.length-tol); len <= kw.length+tol; len++) {
+    for (let i = 0; i <= ans.length-len; i++) {
+      if (levenshtein(ans.slice(i, i+len), kw) <= tol) return true;
+    }
+  }
+  return false;
+}
+
+function submitShort() {
+  if (state.answered_q) return;
+  const val = document.getElementById('short-input').value.trim();
+  if (!val) return;
+  state.answered_q = true;
+  clearTimer();
+  document.getElementById('short-input').disabled = true;
+  const q = state.current;
+  const matched = q.keywords.filter(k => fuzzyMatch(k, val));
+  const needed  = Math.max(2, Math.floor(q.keywords.length * 0.35));
+  const correct = matched.length >= needed;
+  recordAnswer(correct, q);
+  showFeedback(correct, q.exp, matched, q.keywords);
+}
+
+function skipQ() {
+  if (state.answered_q) return;
+  state.answered_q = true;
+  clearTimer();
+  const q = state.current;
+  recordAnswer(false, q);
+  showFeedback(false, q.exp, [], q.keywords);
+}
+
+function recordAnswer(correct, q) {
+  if (!state.topicStats[q.topic]) state.topicStats[q.topic] = {c:0,w:0};
+  if (correct) { state.correct++; state.topicStats[q.topic].c++; }
+  else { state.wrong++; state.topicStats[q.topic].w++; state.repeatPool.push(q); state.missedQs.push({q:q.q, exp:q.exp}); }
+  state.answered++;
+  updateStats();
+}
+
+function showFeedback(correct, exp, matched, keywords) {
+  const box   = document.getElementById('feedback-box');
+  const title = document.getElementById('feedback-title');
+  const body  = document.getElementById('feedback-body');
+  box.className   = 'feedback-box ' + (correct ? 'correct' : 'incorrect');
+  title.textContent = correct ? '✓ Recte! (Correct)' : '✗ Non recte. (Incorrect)';
+  let text = exp;
+  if (!correct && keywords) {
+    const missing = keywords.filter(k => !matched.some(m => normLatin(m) === normLatin(k)));
+    text = 'Matched: ' + (matched.join(', ') || 'none')
+         + '\nMissing concepts: ' + (missing.join(', ') || 'none')
+         + '\n\n' + exp;
+  }
+  if (!correct && state.repeatPool.length > 0) text += '\n\n↩ This question will repeat.';
+  body.textContent = text;
+  document.getElementById('feedback-area').style.display = 'block';
+}
+
+function updateStats() {
+  const pct = state.answered > 0 ? Math.round(state.correct/state.answered*100) : '—';
+  document.getElementById('stat-correct').textContent = state.correct;
+  document.getElementById('stat-wrong').textContent = state.wrong;
+  document.getElementById('stat-pct').textContent = state.answered > 0 ? pct+'%' : '—';
+  document.getElementById('stat-repeat').textContent = state.repeatPool.length;
+}
+
+function updateProgress() {
+  const pct = Math.min(100, Math.round(state.answered/state.totalOriginal*100));
+  document.getElementById('progress-bar').style.width = pct+'%';
+}
+
+function startTimer() {
+  state.timeLeft = state.maxTime;
+  updateTimerBar(state.timeLeft);
+  state.timerInterval = setInterval(() => {
+    state.timeLeft--;
+    updateTimerBar(state.timeLeft);
+    if (state.timeLeft <= 0) { clearTimer(); if (!state.answered_q) timeOut(); }
+  }, 1000);
+}
+
+function clearTimer() { clearInterval(state.timerInterval); }
+
+function updateTimerBar(t) {
+  const pct = Math.max(0, t/state.maxTime*100);
+  const bar = document.getElementById('timer-bar');
+  bar.style.width = pct+'%';
+  bar.style.background = pct > 50 ? 'var(--gold)' : pct > 25 ? 'var(--amber)' : 'var(--red)';
+  document.getElementById('timer-text').textContent = t;
+}
+
+function timeOut() {
+  state.answered_q = true;
+  const q = state.current;
+  if (q.type === 'mcq') {
+    document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+    document.querySelectorAll('.opt-btn')[q.ans].classList.add('correct');
+  } else { document.getElementById('short-input').disabled = true; }
+  recordAnswer(false, q);
+  const box = document.getElementById('feedback-box');
+  box.className = 'feedback-box incorrect';
+  document.getElementById('feedback-title').textContent = '⏱ Tempus fugit! (Time\'s up)';
+  document.getElementById('feedback-body').textContent = q.exp + '\n\n↩ This question will repeat.';
+  document.getElementById('feedback-area').style.display = 'block';
+}
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('results-screen').style.display = 'block';
+  const pct = state.answered > 0 ? Math.round(state.correct/state.answered*100) : 0;
+  document.getElementById('final-pct').textContent = pct+'%';
+  const labels = [[90,'Optime! Parātus es.'],[75,'Bene fēcistī. Review weak topics.'],[60,'Satis est. More study needed.'],[0,'Labōrā plūs! Keep studying.']];
+  document.getElementById('final-label').textContent = labels.find(([t]) => pct>=t)[1];
+
+  const bd = document.getElementById('topic-breakdown');
+  bd.innerHTML = '<h3>Topic Breakdown</h3>';
+  for (const [topic, s] of Object.entries(state.topicStats)) {
+    const tot = s.c+s.w, p = Math.round(s.c/tot*100);
+    const cls = p>=75?'strong':p>=50?'ok':'weak';
+    const row = document.createElement('div');
+    row.className = 'brow';
+    row.innerHTML = `<span>${topic}</span><span class="${cls}">${s.c}/${tot} (${p}%)</span>`;
+    bd.appendChild(row);
+  }
+
+  if (state.missedQs.length > 0) {
+    const ml = document.getElementById('missed-list');
+    ml.innerHTML = '<h3>Missed Questions</h3>';
+    const seen = new Set();
+    state.missedQs.forEach(m => {
+      if (!seen.has(m.q)) {
+        seen.add(m.q);
+        const d = document.createElement('div');
+        d.className = 'missed-item';
+        d.innerHTML = `<div class="mq">${m.q}</div><div class="ma">${m.exp}</div>`;
+        ml.appendChild(d);
+      }
+    });
+  }
+}
+
+function restartMissed() {
+  if (state.missedQs.length === 0) { location.reload(); return; }
+  const seen = new Set();
+  const uq = [];
+  state.missedQs.forEach(m => { if (!seen.has(m.q)) { seen.add(m.q); uq.push(m.q); } });
+  const pool = ALL_QUESTIONS.filter(q => uq.includes(q.q));
+  state.queue = shuffle(pool);
+  state.repeatPool = []; state.correct = 0; state.wrong = 0;
+  state.answered = 0; state.currentIdx = 0; state.topicStats = {};
+  state.missedQs = []; state.totalOriginal = pool.length;
+  state.answered_q = false;
+  document.getElementById('q-total').textContent = pool.length;
+  document.getElementById('results-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  nextQuestion();
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i=a.length-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+function capitalize(s) { return s.charAt(0).toUpperCase()+s.slice(1); }
+</script>
+</body>
+</html>

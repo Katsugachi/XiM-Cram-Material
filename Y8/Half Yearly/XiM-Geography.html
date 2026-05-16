@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geography Exam Prep – Year 8 Place & Liveability</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0d0d0d; color: #f0f0f0; font-family: 'Segoe UI', 'Inter', 'Helvetica Neue', Arial, sans-serif; min-height: 100vh; }
+  #app { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+  h1 { font-size: 1.5rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+  .sub { color: #888; font-size: 0.8rem; margin-bottom: 30px; }
+
+  /* START SCREEN */
+  #start-screen { text-align: center; padding: 40px 20px; }
+  #start-screen h1 { font-size: 2rem; margin-bottom: 8px; }
+  .section-pick { display: flex; gap: 12px; justify-content: center; margin: 24px 0 12px; flex-wrap: wrap; }
+  .pill { padding: 8px 18px; border: 1px solid #444; border-radius: 20px; cursor: pointer; font-family: inherit; font-size: 0.85rem; background: #111; color: #f0f0f0; transition: all 0.15s; }
+  .pill.active { border-color: #fff; background: #fff; color: #000; }
+  .pill:hover { border-color: #aaa; }
+  .diff-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0; }
+  .diff-card { border: 1px solid #333; border-radius: 8px; padding: 16px 12px; cursor: pointer; transition: all 0.15s; background: #111; }
+  .diff-card.active { border-color: #fff; }
+  .diff-card h3 { font-size: 0.95rem; margin-bottom: 4px; }
+  .diff-card p { font-size: 0.75rem; color: #888; }
+  .start-btn { margin-top: 28px; padding: 14px 48px; font-size: 1rem; font-family: inherit; background: #fff; color: #000; border: none; border-radius: 6px; cursor: pointer; letter-spacing: 1px; text-transform: uppercase; font-weight: bold; }
+  .start-btn:hover { background: #ddd; }
+
+  /* QUIZ SCREEN */
+  #quiz-screen { display: none; }
+  .topbar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+  .badge { font-size: 0.72rem; padding: 3px 9px; border: 1px solid #444; border-radius: 4px; color: #aaa; }
+  .badge.theme1 { border-color: #4a9eff; color: #4a9eff; }
+  .badge.theme2 { border-color: #b07aff; color: #b07aff; }
+  .badge.theme3 { border-color: #4ec9ca; color: #4ec9ca; }
+  .badge.theme4 { border-color: #ffa04a; color: #ffa04a; }
+  .badge.easy { border-color: #4eff9a; color: #4eff9a; }
+  .badge.medium { border-color: #ffd24a; color: #ffd24a; }
+  .badge.hard { border-color: #ff6b6b; color: #ff6b6b; }
+  .timer-bar-wrap { flex: 1; min-width: 120px; height: 6px; background: #222; border-radius: 3px; overflow: hidden; }
+  .timer-bar { height: 100%; background: #fff; border-radius: 3px; transition: width 0.5s linear, background 0.5s; }
+  .timer-text { font-size: 0.8rem; color: #aaa; min-width: 30px; text-align: right; }
+
+  .stats-row { display: flex; gap: 20px; margin-bottom: 18px; font-size: 0.8rem; color: #888; flex-wrap: wrap; }
+  .stats-row span b { color: #f0f0f0; }
+
+  .progress-outer { background: #1a1a1a; border-radius: 4px; height: 4px; margin-bottom: 24px; }
+  .progress-inner { height: 4px; background: #555; border-radius: 4px; transition: width 0.3s; }
+
+  .topic-label { font-size: 0.72rem; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .question-text { font-size: 1.05rem; line-height: 1.6; margin-bottom: 16px; color: #f0f0f0; }
+  .extract-box { margin: 8px 0 16px; border: 1px solid #222; border-radius: 6px; padding: 12px 14px; background: #111; font-size: 0.88rem; color: #ccc; line-height: 1.6; font-style: italic; border-left: 3px solid #444; }
+
+  /* MCQ */
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .opt-btn { padding: 12px 16px; background: #111; border: 1px solid #333; border-radius: 6px; color: #f0f0f0; font-family: inherit; font-size: 0.9rem; text-align: left; cursor: pointer; transition: all 0.12s; line-height: 1.4; }
+  .opt-btn:hover:not(:disabled) { border-color: #888; background: #1a1a1a; }
+  .opt-btn.correct { border-color: #4eff9a; background: #0a2a18; color: #4eff9a; }
+  .opt-btn.wrong { border-color: #ff6b6b; background: #2a0a0a; color: #ff6b6b; }
+  .opt-btn:disabled { cursor: default; }
+
+  /* SHORT ANSWER */
+  .short-wrap { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  textarea { background: #111; border: 1px solid #333; border-radius: 6px; color: #f0f0f0; font-family: inherit; font-size: 0.9rem; padding: 12px; resize: vertical; min-height: 90px; width: 100%; }
+  textarea:focus { outline: none; border-color: #888; }
+  .hint-text { font-size: 0.75rem; color: #666; font-style: italic; }
+
+  .action-btn { padding: 10px 24px; font-family: inherit; font-size: 0.85rem; background: #fff; color: #000; border: none; border-radius: 5px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
+  .action-btn:hover { background: #ddd; }
+  .action-btn.secondary { background: transparent; color: #888; border: 1px solid #333; }
+  .action-btn.secondary:hover { color: #f0f0f0; border-color: #888; }
+
+  .feedback-box { padding: 14px 16px; border-radius: 6px; margin-bottom: 16px; font-size: 0.88rem; line-height: 1.6; white-space: pre-wrap; }
+  .feedback-box.correct { background: #0a2a18; border: 1px solid #4eff9a; color: #b0ffd0; }
+  .feedback-box.incorrect { background: #2a0a0a; border: 1px solid #ff6b6b; color: #ffb0b0; }
+  .feedback-box strong { display: block; margin-bottom: 6px; font-size: 0.95rem; }
+
+  /* RESULTS */
+  #results-screen { display: none; text-align: center; padding: 40px 20px; }
+  .big-score { font-size: 4rem; font-weight: bold; margin: 20px 0 6px; }
+  .score-label { color: #888; margin-bottom: 30px; }
+  .breakdown { text-align: left; border: 1px solid #222; border-radius: 8px; padding: 20px; margin: 20px 0; }
+  .breakdown h3 { margin-bottom: 12px; font-size: 0.9rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+  .brow { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #1a1a1a; font-size: 0.85rem; }
+  .brow:last-child { border: none; }
+  .brow .weak { color: #ff6b6b; }
+  .brow .ok { color: #ffd24a; }
+  .brow .strong { color: #4eff9a; }
+  .missed-list { text-align: left; margin: 20px 0; }
+  .missed-list h3 { margin-bottom: 10px; color: #aaa; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+  .missed-item { padding: 8px 12px; border-left: 2px solid #ff6b6b; margin-bottom: 8px; font-size: 0.82rem; background: #150a0a; border-radius: 0 4px 4px 0; }
+  .missed-item .mq { color: #ffb0b0; margin-bottom: 3px; }
+  .missed-item .ma { color: #888; }
+  .btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+
+  .timeout-flash { animation: flash 0.3s ease; }
+  @keyframes flash { 0%,100%{background:#0d0d0d} 50%{background:#2a0000} }
+
+  @media(max-width:600px) { .diff-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- START SCREEN -->
+<div id="start-screen">
+  <h1>Geography Exam Prep</h1>
+  <div class="sub">Year 8 | Place &amp; Liveability | Part B Short Responses</div>
+
+  <div style="margin-bottom:8px;font-size:0.8rem;color:#888;text-transform:uppercase;letter-spacing:1px;">Topics</div>
+  <div class="section-pick">
+    <button class="pill active" onclick="toggleSection('all')">All Topics</button>
+    <button class="pill" onclick="toggleSection('concepts')">Key Concepts</button>
+    <button class="pill" onclick="toggleSection('factors')">Liveability Factors</button>
+    <button class="pill" onclick="toggleSection('fieldwork')">Fieldwork Skills</button>
+    <button class="pill" onclick="toggleSection('global')">Global Comparisons</button>
+  </div>
+
+  <div style="margin:24px 0 8px;font-size:0.8rem;color:#888;text-transform:uppercase;letter-spacing:1px;">Difficulty (Time Limit per Question)</div>
+  <div class="diff-grid">
+    <div class="diff-card active" onclick="setDiff('easy')" id="dc-easy">
+      <h3>Easy</h3>
+      <p>60 sec / question<br>Define &amp; identify</p>
+    </div>
+    <div class="diff-card" onclick="setDiff('medium')" id="dc-medium">
+      <h3>Medium</h3>
+      <p>40 sec / question<br>Explain &amp; outline</p>
+    </div>
+    <div class="diff-card" onclick="setDiff('hard')" id="dc-hard">
+      <h3>Hard</h3>
+      <p>20 sec / question<br>Distinguish &amp; evaluate</p>
+    </div>
+  </div>
+
+  <div style="font-size:0.78rem;color:#666;margin-top:8px;">Adaptive mode: missed questions repeat until correct.</div>
+  <button class="start-btn" onclick="startQuiz()">START</button>
+</div>
+
+<!-- QUIZ SCREEN -->
+<div id="quiz-screen">
+  <div class="topbar">
+    <span id="q-unit-badge" class="badge theme1">Key Concepts</span>
+    <span id="q-diff-badge" class="badge easy">Easy</span>
+    <span id="q-type-badge" class="badge" style="border-color:#888;color:#888;">MCQ</span>
+    <div class="timer-bar-wrap"><div class="timer-bar" id="timer-bar"></div></div>
+    <div class="timer-text" id="timer-text">60</div>
+  </div>
+
+  <div class="stats-row">
+    <span>Q <b id="q-num">1</b>/<b id="q-total">?</b></span>
+    <span>Correct <b id="stat-correct">0</b></span>
+    <span>Wrong <b id="stat-wrong">0</b></span>
+    <span>Percent <b id="stat-pct">—</b></span>
+    <span style="color:#ffd24a">Repeating <b id="stat-repeat">0</b></span>
+  </div>
+  <div class="progress-outer"><div class="progress-inner" id="progress-bar"></div></div>
+
+  <div class="topic-label" id="q-topic">Topic</div>
+  <div class="question-text" id="q-text">Question loads here</div>
+  <div id="q-extract" class="extract-box" style="display:none;"></div>
+
+  <div id="mcq-area" class="options"></div>
+  <div id="short-area" class="short-wrap" style="display:none;">
+    <textarea id="short-input" placeholder="Type your answer…"></textarea>
+    <div class="hint-text" id="hint-text"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="action-btn" onclick="submitShort()">Submit</button>
+      <button class="action-btn secondary" onclick="skipQ()">Skip</button>
+    </div>
+  </div>
+
+  <div id="feedback-area" style="display:none;">
+    <div class="feedback-box" id="feedback-box">
+      <strong id="feedback-title"></strong>
+      <span id="feedback-body"></span>
+    </div>
+    <button class="action-btn" onclick="nextQuestion()">Next</button>
+  </div>
+</div>
+
+<!-- RESULTS SCREEN -->
+<div id="results-screen">
+  <h1>Results</h1>
+  <div class="big-score" id="final-pct">0%</div>
+  <div class="score-label" id="final-label">Review weak topics and retry.</div>
+  <div class="breakdown" id="topic-breakdown"></div>
+  <div class="missed-list" id="missed-list"></div>
+  <div class="btn-row">
+    <button class="action-btn" onclick="restartMissed()">Retry Missed Only</button>
+    <button class="action-btn secondary" onclick="location.reload()">Start Over</button>
+  </div>
+</div>
+
+</div>
+<script>
+// ============================================================
+// QUESTION BANK – Place & Liveability
+// unit: concepts / factors / fieldwork / global
+// diff: easy / medium / hard
+// type: mcq / short
+// ============================================================
+const ALL_QUESTIONS = [
+
+// ══════════════════════════════════════════════════════════
+// KEY CONCEPTS
+// ══════════════════════════════════════════════════════════
+{unit:'concepts',topic:'Defining Place & Liveability',diff:'easy',type:'mcq',
+ q:'Which of the following BEST defines "liveability"?',
+ opts:['The total population of a place','How suitable and desirable a place is to live in','The economic output of a region','The physical size of an urban area'],
+ ans:1, exp:'Liveability refers to how suitable, desirable, and comfortable a place is to live in, based on social, economic, and environmental factors.'},
+
+{unit:'concepts',topic:'Defining Place & Liveability',diff:'easy',type:'mcq',
+ q:'Which of the following is NOT typically considered a liveability factor?',
+ opts:['Access to healthcare','Quality of public transport','The country\'s GDP per capita ranking','Access to green spaces'],
+ ans:2, exp:'GDP per capita is a national economic measure, not directly a liveability factor. Liveability focuses on the lived experience: services, environment, safety, and infrastructure.'},
+
+{unit:'concepts',topic:'Defining Place & Liveability',diff:'easy',type:'mcq',
+ q:'What does "sense of place" refer to in geography?',
+ opts:['A precise GPS coordinate','The physical size of a suburb','The emotional and cultural meaning people attach to a location','The number of services in an area'],
+ ans:2, exp:'"Sense of place" describes the subjective feelings, memories, and cultural significance people associate with a particular location.'},
+
+{unit:'concepts',topic:'Defining Place & Liveability',diff:'easy',type:'short',
+ q:'Define "place" as a geographical concept.',
+ keywords:['location','meaning','human','natural','characteristics','features','people','environment'],
+ hint:'Think beyond just a location on a map.',
+ exp:'A "place" in geography is a specific location that has been given meaning by people. It has both physical characteristics (landforms, climate, vegetation) and human characteristics (culture, economy, infrastructure) that make it distinct.'},
+
+{unit:'concepts',topic:'Defining Place & Liveability',diff:'medium',type:'short',
+ q:'Distinguish between "location" and "place" in geography.',
+ keywords:['location','coordinates','where','place','meaning','human','characteristics','cultural','identity'],
+ hint:'One is objective; the other is subjective.',
+ exp:'"Location" is the objective position of a site, described by coordinates or address (e.g. 33°S, 151°E). "Place" goes further — it includes the human meaning, cultural identity, and characteristics that make a location unique and meaningful to people.'},
+
+{unit:'concepts',topic:'Defining Place & Liveability',diff:'medium',type:'mcq',
+ q:'Which statement BEST explains why liveability is subjective?',
+ opts:['Different cities have different populations','People have different values, needs, and priorities so they weight factors differently','Liveability indices are created by different organisations','Cities change over time'],
+ ans:1, exp:'Liveability is subjective because different people prioritise different things. A young professional may value nightlife and transport; a family may value schools and parks; an elderly person may value healthcare access.'},
+
+{unit:'concepts',topic:'Defining Place & Liveability',diff:'medium',type:'short',
+ q:'Explain why liveability varies between individuals within the same suburb.',
+ keywords:['subjective','perception','values','needs','age','income','access','priorities','differ'],
+ hint:'Think about how different people use their suburb differently.',
+ exp:'Liveability varies because it is subjective. Different people have different values and needs based on factors like age, income, family situation, and cultural background. For example, a retiree may value quiet parks and healthcare, while a student values cheap rent and public transport. The same suburb can be highly liveable for one person and unsuitable for another.'},
+
+{unit:'concepts',topic:'Defining Place & Liveability',diff:'hard',type:'short',
+ q:'Distinguish between the perspectives of a resident, a geographer, and a real estate developer when assessing liveability. Why do these perspectives differ?',
+ keywords:['resident','personal','lived','experience','geographer','objective','data','measure','developer','profit','land','value','economic'],
+ hint:'Consider what each person stands to gain from their assessment.',
+ exp:'A resident assesses liveability from personal lived experience — how safe, convenient, and pleasant daily life feels. A geographer uses objective data (indices, spatial analysis) to measure and compare places systematically. A real estate developer focuses on liveability factors that drive property demand and land values, prioritising economic outcomes. These perspectives differ because each person has different goals: personal wellbeing, academic understanding, and profit respectively.'},
+
+// ══════════════════════════════════════════════════════════
+// LIVEABILITY FACTORS
+// ══════════════════════════════════════════════════════════
+{unit:'factors',topic:'Transport & Connectivity',diff:'easy',type:'mcq',
+ q:'How does accessible public transport improve liveability?',
+ opts:['It reduces noise pollution','It connects residents to jobs, services, and social opportunities','It increases property values only','It reduces the need for healthcare'],
+ ans:1, exp:'Good public transport improves liveability by connecting people to employment, education, healthcare, and recreation, reducing car dependence and social isolation.'},
+
+{unit:'factors',topic:'Transport & Connectivity',diff:'easy',type:'short',
+ q:'Identify TWO ways that poor public transport can negatively affect liveability.',
+ keywords:['access','isolation','car','cost','time','jobs','services','social','disadvantage'],
+ hint:'Think about who struggles most without good transport.',
+ exp:'(1) Social isolation — people without cars or near transit may be cut off from jobs, healthcare, and community. (2) Financial burden — reliance on private cars increases household costs through fuel, insurance, and maintenance. Low-income residents are disproportionately affected.'},
+
+{unit:'factors',topic:'Transport & Connectivity',diff:'medium',type:'short',
+ q:'Explain how a suburb\'s proximity to public transport affects its liveability for DIFFERENT groups of people.',
+ keywords:['elderly','students','low income','car','access','jobs','school','hospital','depend','transport'],
+ hint:'Think about who relies most on public transport.',
+ exp:'Good public transport most benefits those who cannot or do not drive: elderly residents (who may no longer drive), low-income households (who cannot afford cars), students, and people with disabilities. For these groups, proximity to a train station or bus route is critical for accessing employment, education, and healthcare. Wealthier car-owning residents are less affected. This means transport infrastructure has an unequal impact on liveability across different groups.'},
+
+{unit:'factors',topic:'Transport & Connectivity',diff:'hard',type:'short',
+ q:'Outline the relationship between transport infrastructure and social inequality in urban areas.',
+ keywords:['inequality','access','low income','outer','suburb','car','depend','opportunity','employment','disadvantage','inner','infrastructure'],
+ hint:'Where are good transport links usually concentrated? Who misses out?',
+ exp:'Transport infrastructure is often concentrated in inner-city areas, meaning outer suburbs — where lower-income residents are more likely to live — have poorer connectivity. Without good transport, residents in these areas face reduced access to well-paying jobs, quality education, and health services. This reinforces socio-economic disadvantage: the areas that most need good transport often have the least of it, deepening spatial inequality.'},
+
+{unit:'factors',topic:'Healthcare & Education',diff:'easy',type:'mcq',
+ q:'Why is access to healthcare considered a liveability factor?',
+ opts:['It makes suburbs more aesthetically appealing','It ensures residents can receive medical treatment quickly, improving health outcomes','It generates employment only','It reduces crime rates'],
+ ans:1, exp:'Access to healthcare improves liveability because proximity to hospitals, GPs, and clinics means residents receive faster medical treatment, leading to better health outcomes and a sense of security.'},
+
+{unit:'factors',topic:'Healthcare & Education',diff:'easy',type:'mcq',
+ q:'Which of the following BEST describes the relationship between quality education and liveability?',
+ opts:['Better schools make suburbs look more attractive','Access to quality education increases long-term opportunities and quality of life for residents','Education only matters for children, not overall liveability','Schools reduce traffic congestion'],
+ ans:1, exp:'Quality education improves liveability by providing residents with opportunities for social mobility, higher future income, and better employment prospects, benefiting both individuals and the wider community.'},
+
+{unit:'factors',topic:'Healthcare & Education',diff:'medium',type:'short',
+ q:'Explain how the proximity of schools and healthcare facilities affects the liveability of a suburb.',
+ keywords:['access','school','quality','education','hospital','gp','healthcare','close','convenient','reduce','travel','time','family'],
+ hint:'Use the words "access", "proximity", and "outcomes".',
+ exp:'Proximity to schools and healthcare facilities is a key liveability factor because it reduces travel time and increases access for residents. Families with children value nearby quality schools for educational opportunity and convenience. Similarly, having GPs, hospitals, and specialist services nearby improves health outcomes and provides reassurance, particularly for elderly residents and families. Poor access forces long travel times and can deter people from seeking timely medical help.'},
+
+{unit:'factors',topic:'Green Spaces & Environment',diff:'easy',type:'mcq',
+ q:'Which of the following is a benefit of green spaces (parks, reserves) for liveability?',
+ opts:['They increase traffic congestion','They provide areas for recreation, reduce urban heat, and improve mental health','They are purely decorative','They only benefit children'],
+ ans:1, exp:'Green spaces improve liveability through multiple pathways: recreation and exercise, cooling urban heat islands, absorbing stormwater, supporting biodiversity, and providing mental health benefits for residents.'},
+
+{unit:'factors',topic:'Green Spaces & Environment',diff:'medium',type:'short',
+ q:'Explain how the presence of green spaces contributes to the liveability of a suburb.',
+ keywords:['recreation','mental health','exercise','cool','heat','environment','park','nature','social','well-being','biodiversity'],
+ hint:'Think physical, mental, and environmental benefits.',
+ exp:'Green spaces such as parks and reserves improve liveability in multiple ways. They provide recreation areas for exercise and social interaction, improving physical and mental health. They reduce urban heat island effects by providing shade and evapotranspiration, making areas cooler. They support biodiversity and improve environmental quality. Research shows access to nature is strongly linked to reduced stress and improved wellbeing, making green space density a key liveability indicator.'},
+
+{unit:'factors',topic:'Green Spaces & Environment',diff:'hard',type:'short',
+ q:'Distinguish between natural spaces and public open spaces as liveability factors, and explain when each may be MORE important to residents.',
+ keywords:['natural','bushland','ecosystem','biodiversity','environment','public','open space','park','social','recreation','active','passive','urban','planned'],
+ hint:'One is planned/built; the other is pre-existing ecosystem.',
+ exp:'Natural spaces (bushland, wetlands, waterways) are unmodified or minimally modified ecosystems that provide biodiversity, ecological services (water filtration, carbon storage), and connection to nature. Public open spaces (parks, ovals, plazas) are deliberately designed for human recreation and social interaction. Natural spaces may be more important for environmental quality, mental restoration, and ecological liveability. Public open spaces are more important for active recreation, community events, and planned activities. In dense urban areas, both are critical but public open spaces often receive more investment while natural spaces are under pressure from development.'},
+
+{unit:'factors',topic:'Safety & Community',diff:'easy',type:'mcq',
+ q:'How does community safety contribute to liveability?',
+ opts:['Lower crime rates mean residents feel secure and can use public spaces more freely','Safety only matters for older residents','It has no measurable effect on liveability','It only relates to the presence of police stations'],
+ ans:0, exp:'Safety is fundamental to liveability. When residents feel secure, they are more willing to use public spaces, walk at night, and engage socially — all of which increase quality of life.'},
+
+{unit:'factors',topic:'Safety & Community',diff:'medium',type:'short',
+ q:'Explain how a lack of community safety detracts from the liveability of a suburb.',
+ keywords:['crime','fear','restrict','movement','avoid','public space','social','isolation','business','invest','decline','perception'],
+ hint:'Think about how crime affects behaviour and investment.',
+ exp:'When a suburb has high crime rates or is perceived as unsafe, it detracts significantly from liveability. Residents restrict their movements — avoiding public spaces at night, reducing social interaction. Businesses may be less willing to invest, limiting local services. Property values may decline. Fear itself — even independent of actual crime — reduces quality of life by creating anxiety and social isolation. Safety perception therefore shapes liveability as powerfully as actual crime statistics.'},
+
+{unit:'factors',topic:'Economic Factors',diff:'easy',type:'mcq',
+ q:'How does local employment opportunity affect liveability?',
+ opts:['It only benefits business owners','It allows residents to work close to home, reducing commute time and improving work-life balance','Employment has no connection to liveability','It only affects liveability in rural areas'],
+ ans:1, exp:'Local employment improves liveability by reducing commute times, supporting local spending (which sustains services), and improving financial security — all of which contribute to quality of life.'},
+
+{unit:'factors',topic:'Economic Factors',diff:'medium',type:'short',
+ q:'Outline how housing affordability relates to liveability.',
+ keywords:['affordable','housing','cost','rent','mortgage','income','stress','access','location','disadvantage','low income','displacement'],
+ hint:'What happens when housing becomes too expensive?',
+ exp:'Housing affordability is a critical liveability factor because shelter is a basic need. When housing costs are high relative to income, residents experience financial stress, may be forced to commute longer distances from cheaper outer suburbs, or may be displaced entirely. This reduces liveability for lower-income groups who are pushed away from well-serviced areas into locations with fewer amenities and longer commutes. Conversely, affordable housing in well-serviced areas dramatically improves liveability.'},
+
+{unit:'factors',topic:'Economic Factors',diff:'hard',type:'short',
+ q:'Explain the concept of "spatial disadvantage" and how it relates to unequal liveability within a city.',
+ keywords:['spatial','disadvantage','location','services','access','outer','inner','poor','wealthy','inequality','unequal','suburb','opportunity','reinforce'],
+ hint:'Think about how geography concentrates advantage and disadvantage.',
+ exp:'"Spatial disadvantage" refers to the way geographic location concentrates social and economic disadvantage. In most Australian cities, wealthier inner suburbs have better access to public transport, quality schools, healthcare, employment, and green spaces — all high liveability factors. Outer and western suburbs often have lower access to these services, higher unemployment, and poorer transport. This means a person\'s quality of life is partly determined simply by where they live, reinforcing existing inequality. Low-income residents in low-liveability areas face compounding disadvantages that are difficult to escape.'},
+
+// ══════════════════════════════════════════════════════════
+// FIELDWORK SKILLS
+// ══════════════════════════════════════════════════════════
+{unit:'fieldwork',topic:'Fieldwork Methods',diff:'easy',type:'mcq',
+ q:'What does an annotated photograph in geographical fieldwork typically include?',
+ opts:['Only the photo','The photo plus a caption describing what it shows and its geographical significance','A map of where the photo was taken','A graph based on data collected'],
+ ans:1, exp:'An annotated photograph includes the image itself plus a written annotation explaining what is shown and why it is geographically significant — in this case, how it contributes to or detracts from liveability.'},
+
+{unit:'fieldwork',topic:'Fieldwork Methods',diff:'easy',type:'mcq',
+ q:'What does the acronym BOLTS stand for in map conventions?',
+ opts:['Border, Orientation, Legend, Title, Scale','Buildings, Objects, Lines, Text, Symbols','Boundary, Origin, Location, Terrain, Statistics','Border, Objects, Legend, Text, Symbols'],
+ ans:0, exp:'BOLTS = Border, Orientation (compass/north arrow), Legend (key), Title, Scale. These are the five essential conventions for any geographical map.'},
+
+{unit:'fieldwork',topic:'Fieldwork Methods',diff:'easy',type:'short',
+ q:'Identify THREE features you would include on an annotated liveability map of your suburb.',
+ keywords:['transport','park','school','hospital','shop','sport','bus','train','station','green','space','service'],
+ hint:'Think about the categories from your fieldwork sheet.',
+ exp:'Examples include: (1) Transport — bus stops, train stations, cycling paths. (2) Green spaces — parks, reserves, recreational areas. (3) Education — schools, TAFE, libraries. (4) Healthcare — GPs, hospitals, pharmacies. (5) Retail — supermarkets, shopping centres. Any three well-chosen examples with brief explanation of their liveability relevance.'},
+
+{unit:'fieldwork',topic:'Fieldwork Methods',diff:'medium',type:'short',
+ q:'Explain what makes an effective annotation for a fieldwork photograph about liveability.',
+ keywords:['explain','link','liveability','contribute','detract','specific','evidence','why','how','relevant','50','words','detail'],
+ hint:'What does a 5/5 annotation do that a 1/5 annotation does not?',
+ exp:'An effective annotation: (1) identifies the specific feature shown in the photo; (2) clearly explains HOW it contributes to or detracts from liveability — not just WHAT it is; (3) uses geographical vocabulary (e.g., "connectivity", "access", "social infrastructure"); (4) is specific to the local suburb, not generic; (5) links to broader liveability themes. A weak annotation merely describes what is visible without explaining its liveability significance.'},
+
+{unit:'fieldwork',topic:'Fieldwork Methods',diff:'medium',type:'short',
+ q:'Outline the purpose of conducting primary fieldwork (walking and photographing your suburb) rather than relying only on secondary sources like Google Maps.',
+ keywords:['primary','first-hand','observe','local','condition','real','current','experience','secondary','outdated','missing','detail','sensory','context'],
+ hint:'What can you see in person that you cannot see on a map?',
+ exp:'Primary fieldwork allows direct observation of current, real-world conditions that secondary sources may miss or misrepresent. Walking the suburb reveals sensory details — noise levels, cleanliness, whether spaces feel welcoming and safe — that Google Maps cannot capture. Fieldwork also reveals recent changes and local context (e.g. a park that looks green on a map but is poorly maintained). Secondary sources may be outdated, lack detail, or reflect a developer\'s perspective rather than a resident\'s.'},
+
+{unit:'fieldwork',topic:'Fieldwork Methods',diff:'medium',type:'mcq',
+ q:'Why is it important to include BOTH features that contribute to AND features that detract from liveability in your fieldwork?',
+ opts:['To make the task longer','To provide a balanced and accurate assessment of liveability rather than a biased view','Because the marking criteria requires exactly three of each','To cover more topics for higher marks'],
+ ans:1, exp:'Including both positive and negative features demonstrates balanced geographical thinking. A suburb is rarely entirely liveable or entirely unliveable — honest assessment means acknowledging strengths AND weaknesses. This reflects the GE4-4 outcome: examining multiple perspectives on geographical issues.'},
+
+{unit:'fieldwork',topic:'Fieldwork Methods',diff:'hard',type:'short',
+ q:'Evaluate the limitations of fieldwork as a method for assessing the liveability of a suburb.',
+ keywords:['limitation','snapshot','time','weather','bias','observer','sample','small','area','subjective','one day','change','season','incomplete'],
+ hint:'What can go wrong or be missed during a single walk-around?',
+ exp:'Fieldwork has several limitations: (1) Temporal bias — observations on one day may not reflect normal conditions (e.g., a park is busier on weekends; a street is noisier during peak hour). (2) Observer bias — the researcher\'s own background and values influence what they notice and how they interpret features. (3) Limited spatial coverage — a short walk cannot represent the entire suburb, which may have distinct precincts. (4) Seasonal variation — green spaces look very different in winter vs summer. (5) Safety constraints — some areas may be inaccessible or unsafe to photograph. These limitations mean fieldwork should be combined with secondary data for a complete assessment.'},
+
+{unit:'fieldwork',topic:'Geographical Inquiry Skills',diff:'easy',type:'mcq',
+ q:'In the command word definitions for this task, what does "explain" require you to do?',
+ opts:['List features without detail','Relate cause and effect; provide why and/or how','Note differences between two things','Simply name or identify something'],
+ ans:1, exp:'"Explain" = relate cause and effect, make relationships evident, provide WHY and/or HOW. It requires more than identification — you must show understanding of how things are connected.'},
+
+{unit:'fieldwork',topic:'Geographical Inquiry Skills',diff:'easy',type:'mcq',
+ q:'What does "distinguish" mean in a geography exam question?',
+ opts:['Describe in great detail','Provide a full explanation','Note differences between two things','Identify and name only'],
+ ans:2, exp:'"Distinguish" = recognise or note differences between two things. It requires a clear comparison that shows you can tell them apart.'},
+
+{unit:'fieldwork',topic:'Geographical Inquiry Skills',diff:'medium',type:'short',
+ q:'A question asks you to "outline the factors that affect liveability." Explain what your response should include, and what it should NOT include.',
+ keywords:['outline','main','features','general','brief','not','detailed','cause','effect','list','overview','key','points'],
+ hint:'Recall the NESA definition of "outline".',
+ exp:'"Outline" means sketch in general terms and indicate the main features. Your response should: briefly identify and describe the key factors (transport, healthcare, green spaces, safety, education, economic opportunity) with enough detail to show understanding. It should NOT include deep causal analysis or extended explanation for each point — that would be an "explain" response. Think of "outline" as writing the main dot points with a sentence of context for each.'},
+
+{unit:'fieldwork',topic:'Geographical Inquiry Skills',diff:'hard',type:'short',
+ q:'You are asked: "Distinguish between a feature that contributes to liveability and one that detracts from it, using examples from your fieldwork." Write a model response.',
+ keywords:['contribute','detract','example','liveability','contrast','positive','negative','because','whereas','improve','reduce'],
+ hint:'Use a "whereas" or "in contrast" structure to show the distinction clearly.',
+ exp:'A feature that contributes to liveability improves the quality of life for residents, for example a well-maintained park provides green space for recreation and mental wellbeing, increasing the suburb\'s desirability. In contrast, a feature that detracts from liveability reduces quality of life — for example, a busy arterial road with no footpath or crossing creates noise and safety hazards, making the suburb less walkable and less safe for pedestrians. The key distinction is whether the feature makes the suburb a more or less desirable place to live.'},
+
+// ══════════════════════════════════════════════════════════
+// GLOBAL COMPARISONS
+// ══════════════════════════════════════════════════════════
+{unit:'global',topic:'Liveability Indices',diff:'easy',type:'mcq',
+ q:'The Economist Intelligence Unit (EIU) Global Liveability Index ranks cities using which categories?',
+ opts:['Population, GDP, climate, transport','Stability, healthcare, culture/environment, education, infrastructure','Safety, food, water, transport, green space','Crime, income, education, healthcare, transport'],
+ ans:1, exp:'The EIU index uses five categories: Stability (safety/crime), Healthcare, Culture and Environment (recreation, climate), Education, and Infrastructure (transport, energy, water).'},
+
+{unit:'global',topic:'Liveability Indices',diff:'easy',type:'mcq',
+ q:'Australian cities frequently rank highly on global liveability indices. Which of the following is a key reason?',
+ opts:['Australia has the world\'s largest population','Australian cities have strong infrastructure, stable governance, quality healthcare and education, and a pleasant climate','Australia has the highest GDP in the world','Australian cities have no traffic or pollution problems'],
+ ans:1, exp:'Australian cities rank highly due to strong performance across multiple liveability factors: quality healthcare, education, stable governance, low crime, good infrastructure, and temperate climate.'},
+
+{unit:'global',topic:'Liveability Indices',diff:'easy',type:'short',
+ q:'Identify TWO limitations of using a global liveability index to compare cities.',
+ keywords:['subjective','weight','bias','wealthy','developed','cost','afford','perspective','western','data','missing','local','context'],
+ hint:'Who creates these indices, and who are they designed for?',
+ exp:'(1) They often reflect the perspective of wealthy, expatriate professionals rather than ordinary local residents — factors like housing affordability for locals may be underweighted. (2) The indices can be biased towards Western, developed-world standards, meaning cities in the Global South are disadvantaged regardless of local quality of life. (3) They may not capture cultural liveability factors important to local populations.'},
+
+{unit:'global',topic:'Liveability Indices',diff:'medium',type:'short',
+ q:'Explain why a city that ranks highly on a global liveability index may still have areas of low liveability within it.',
+ keywords:['unequal','spatial','inequality','suburb','disadvantage','inner','outer','wealthy','poor','access','index','average','not','all'],
+ hint:'Think about what an "average" score hides.',
+ exp:'Global liveability indices produce a single score for an entire city, but cities are internally unequal. Wealthy inner suburbs may have excellent access to transport, green space, healthcare, and education, while outer or poorer suburbs may lack all of these. The city average masks this spatial inequality. Sydney, for example, ranks highly globally but has significant liveability differences between its eastern suburbs and its western and south-western fringes.'},
+
+{unit:'global',topic:'Liveability Indices',diff:'medium',type:'mcq',
+ q:'Which of the following cities has been ranked one of the world\'s most liveable in recent years?',
+ opts:['Lagos, Nigeria','Vienna, Austria','Jakarta, Indonesia','Karachi, Pakistan'],
+ ans:1, exp:'Vienna, Austria has consistently topped global liveability rankings (EIU, Mercer) due to its exceptional public transport, low crime, quality healthcare and education, cultural infrastructure, and stable governance.'},
+
+{unit:'global',topic:'Comparing Urban & Rural',diff:'easy',type:'mcq',
+ q:'Which of the following is generally MORE liveable in rural areas compared to urban areas?',
+ opts:['Access to employment','Access to healthcare','Natural environment and open space','Quality of public transport'],
+ ans:2, exp:'Rural areas typically have better access to natural environments and open space — a liveability strength. However, they often lag behind cities in access to employment, healthcare, education, and transport.'},
+
+{unit:'global',topic:'Comparing Urban & Rural',diff:'medium',type:'short',
+ q:'Outline the liveability challenges faced by people living in rural and remote Australia.',
+ keywords:['remote','rural','access','healthcare','education','transport','employment','distance','service','isolation','doctor','fly','drive','hospital'],
+ hint:'Think about what is absent, not just what is present.',
+ exp:'People in rural and remote Australia face significant liveability challenges due to distance from services. Healthcare access is limited — many communities rely on fly-in doctors or must travel hundreds of kilometres for specialist care. Educational options are fewer, with limited secondary and tertiary choices. Employment opportunities are concentrated in a narrow range of industries (agriculture, mining). Public transport is minimal or absent. Social isolation and mental health challenges are greater. These limitations reflect how liveability declines with distance from major urban centres.'},
+
+{unit:'global',topic:'Comparing Urban & Rural',diff:'hard',type:'short',
+ q:'Distinguish between the liveability of an inner-city Sydney suburb and an outer western Sydney suburb, using specific factors.',
+ keywords:['inner','outer','transport','access','green','space','employment','housing','cost','afford','service','school','hospital','commute','time','western'],
+ hint:'Be specific: what does Surry Hills have that Penrith or Mt Druitt does not?',
+ exp:'Inner-city suburbs (e.g., Surry Hills) typically have higher liveability in transport (walking distance to trains, buses), employment access (close to CBD), cultural infrastructure (cafes, galleries), healthcare, and services. Outer western suburbs (e.g., Mt Druitt, Penrith) typically have lower liveability in these areas — longer commute times, fewer local employment options, less cultural infrastructure, and historically underfunded services. However, outer suburbs often have advantages in housing affordability and space per household. The key distinction is that inner suburbs offer access convenience while outer suburbs offer space and affordability, but access disadvantage in the outer west means residents pay a "transport tax" in time and money.'},
+
+{unit:'global',topic:'Improving Liveability',diff:'medium',type:'mcq',
+ q:'Which of the following is an example of urban planning that aims to improve liveability?',
+ opts:['Building more motorways through inner suburbs','Constructing mixed-use precincts with housing, shops, and parks near transport hubs','Removing trees to reduce maintenance costs','Converting parks to commercial developments'],
+ ans:1, exp:'Mixed-use precincts near transport hubs improve liveability by reducing car dependence, providing local services and housing, activating streets, and creating walkable neighbourhoods — all evidence-based liveability improvements.'},
+
+{unit:'global',topic:'Improving Liveability',diff:'medium',type:'short',
+ q:'Explain how improving public transport infrastructure could improve liveability in outer suburban areas.',
+ keywords:['connect','access','employment','service','reduce','commute','cost','time','opportunity','social','inclusion','equality','transport','improve'],
+ hint:'Link transport to access, which links to opportunity.',
+ exp:'Improving public transport in outer suburbs would improve liveability by connecting residents to employment, education, healthcare, and social opportunities in a more affordable and time-efficient way. Reduced commute times improve work-life balance and mental health. Better transport reduces the financial burden of car ownership. It also increases social inclusion for those who cannot drive (elderly, youth, low-income). Improving outer suburban transport therefore addresses spatial disadvantage and increases liveability equity across the city.'},
+
+{unit:'global',topic:'Improving Liveability',diff:'hard',type:'short',
+ q:'Evaluate whether economic development always improves liveability, using the concept of "trade-offs".',
+ keywords:['trade-off','development','economic','grow','improve','income','employment','also','cost','environment','congestion','inequality','not always','displacement','gentrification'],
+ hint:'Think about who benefits and who loses out from economic development.',
+ exp:'Economic development does not always improve liveability, because it involves trade-offs. Development can increase employment, income, and local services — improving liveability for some residents. However, it may also cause: (1) Environmental degradation — clearing green spaces for development reduces nature access. (2) Congestion — more development brings more traffic. (3) Gentrification — rising property values from development can displace lower-income residents who can no longer afford to live in improved areas. (4) Inequality — development benefits may accrue to landowners rather than renters. Liveability improvements therefore depend on who development serves, how it is planned, and whether adequate infrastructure is provided alongside growth.'},
+
+// ══════════════════════════════════════════════════════════
+// EXAM TECHNIQUE (Part B specific training)
+// ══════════════════════════════════════════════════════════
+{unit:'concepts',topic:'Exam Technique',diff:'easy',type:'mcq',
+ q:'A 3-mark "explain" question in your Part B exam requires which type of response?',
+ opts:['A single word or phrase','A list of dot points only','A response showing cause, effect, and the relationship between them','A diagram with labels'],
+ ans:2, exp:'"Explain" = cause and effect. A 3-mark explain response needs to: identify the feature/concept (1), explain how/why it connects to liveability (2), and extend with a specific example or further reasoning (3).'},
+
+{unit:'concepts',topic:'Exam Technique',diff:'easy',type:'short',
+ q:'Write a one-sentence "geographical vocabulary" definition of the term "infrastructure" as it relates to liveability.',
+ keywords:['physical','systems','services','transport','water','energy','roads','facilities','support','community','function'],
+ hint:'"Infrastructure" = the physical systems that allow a society to function.',
+ exp:'"Infrastructure" refers to the physical systems and facilities — such as roads, rail networks, water supply, electricity grids, and public buildings — that allow a community to function effectively. Well-maintained infrastructure is a key liveability indicator because it underpins access to all other services.'},
+
+{unit:'concepts',topic:'Exam Technique',diff:'medium',type:'short',
+ q:'You are given this question: "Describe the liveability features of your local suburb." Write a 3–4 sentence model response using your fieldwork suburb.',
+ keywords:['suburb','feature','transport','park','school','shop','describe','characteristic','liveability','contributes'],
+ hint:'Use at least THREE different liveability features. Be specific.',
+ exp:'A strong response describes 3+ specific features with geographical vocabulary. Example: "[Suburb name] demonstrates several positive liveability features. The suburb contains [X] park which provides green space for recreation, improving residents\' physical and mental wellbeing. A bus stop on [Street] connects residents to the CBD and nearby train station, improving accessibility. The presence of [School name] ensures quality education is available within walking distance for local families. However, [feature] detracts from liveability because [reason]." Specificity, geographical terminology, and cause-effect reasoning distinguish high from low responses.'},
+
+{unit:'concepts',topic:'Exam Technique',diff:'hard',type:'short',
+ q:'This question is worth 4 marks: "Explain the relationship between transport infrastructure and liveability in your local area." Write a full model response.',
+ keywords:['transport','connects','access','employment','service','commute','reduce','improve','liveability','local','example','because','therefore','result'],
+ hint:'4 marks = intro + 2-3 cause-effect points + a specific local example. No bullet points in exam.',
+ exp:'Transport infrastructure directly influences liveability by determining how easily residents can access employment, education, healthcare, and recreation. In [suburb], the presence of [specific transport feature, e.g. train station / bus routes] improves connectivity by linking residents to the broader city network without requiring car ownership. This is particularly significant for low-income residents and young people who rely on public transport. However, [if applicable] the lack of frequent evening services or limited cycle paths reduces liveability for those who commute outside peak hours. Overall, strong transport infrastructure is a multiplier for liveability — it amplifies access to all other services, making it one of the most critical factors in determining a suburb\'s desirability.'},
+
+];
+
+// ============================================================
+// FUZZY MATCHING ENGINE
+// ============================================================
+function levenshtein(a, b) {
+  const m = a.length, n = b.length;
+  const dp = Array.from({length: m+1}, (_, i) => [i, ...Array(n).fill(0)]);
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = a[i-1]===b[j-1] ? dp[i-1][j-1] : 1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+  return dp[m][n];
+}
+
+function fuzzyMatch(keyword, answerText) {
+  const kw  = keyword.toLowerCase();
+  const ans = answerText.toLowerCase();
+  if (ans.includes(kw)) return true;
+  const tol = kw.length >= 7 ? 2 : kw.length >= 4 ? 1 : 0;
+  if (tol === 0) return false;
+  for (const word of ans.split(/[\s,;.!?()\\/]+/)) {
+    if (Math.abs(word.length - kw.length) <= tol && levenshtein(word, kw) <= tol) return true;
+  }
+  for (let len = Math.max(1, kw.length-tol); len <= kw.length+tol; len++) {
+    for (let i = 0; i <= ans.length-len; i++) {
+      if (levenshtein(ans.slice(i, i+len), kw) <= tol) return true;
+    }
+  }
+  return false;
+}
+
+// ============================================================
+// STATE & LOGIC
+// ============================================================
+const TIME_LIMITS = { easy: 60, medium: 40, hard: 20 };
+const UNIT_THEMES = { concepts: 'theme1', factors: 'theme2', fieldwork: 'theme3', global: 'theme4' };
+const UNIT_LABELS = { concepts: 'Key Concepts', factors: 'Liveability Factors', fieldwork: 'Fieldwork Skills', global: 'Global Comparisons' };
+
+let selectedSection = 'all';
+let state = {
+  queue: [], repeatPool: [], current: null,
+  correct: 0, wrong: 0, answered: 0, answered_q: false,
+  timerInterval: null, timeLeft: 60, maxTime: 60,
+  difficulty: 'easy', topicStats: {}, missedQs: [],
+  totalOriginal: 0, currentIdx: 0
+};
+
+function toggleSection(s) {
+  selectedSection = s;
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+function setDiff(d) {
+  state.difficulty = d;
+  ['easy','medium','hard'].forEach(x => document.getElementById('dc-'+x).classList.remove('active'));
+  document.getElementById('dc-'+d).classList.add('active');
+}
+
+function startQuiz() {
+  const diffMap = { easy: ['easy'], medium: ['easy','medium'], hard: ['easy','medium','hard'] };
+  let pool = ALL_QUESTIONS.filter(q => {
+    const unitOk = selectedSection === 'all' || q.unit === selectedSection;
+    return unitOk && diffMap[state.difficulty].includes(q.diff);
+  });
+  if (pool.length === 0) { alert('No questions match. Try different filters.'); return; }
+
+  state.queue = shuffle(pool);
+  state.repeatPool = [];
+  state.correct = 0; state.wrong = 0; state.answered = 0;
+  state.currentIdx = 0; state.topicStats = {}; state.missedQs = [];
+  state.totalOriginal = pool.length;
+  state.maxTime = TIME_LIMITS[state.difficulty];
+
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  document.getElementById('q-total').textContent = pool.length;
+  document.getElementById('q-diff-badge').textContent = capitalize(state.difficulty);
+  document.getElementById('q-diff-badge').className = 'badge ' + state.difficulty;
+
+  nextQuestion();
+}
+
+function nextQuestion() {
+  clearTimer();
+  document.getElementById('feedback-area').style.display = 'none';
+  document.getElementById('mcq-area').innerHTML = '';
+  document.getElementById('short-area').style.display = 'none';
+  document.getElementById('short-input').value = '';
+  document.getElementById('short-input').disabled = false;
+  document.getElementById('q-extract').style.display = 'none';
+
+  let q = null;
+  if (state.queue.length > 0) {
+    q = state.queue.shift();
+  } else if (state.repeatPool.length > 0) {
+    state.repeatPool = shuffle(state.repeatPool);
+    q = state.repeatPool.shift();
+  } else {
+    showResults(); return;
+  }
+
+  state.current = q;
+  state.answered_q = false;
+  state.currentIdx++;
+
+  document.getElementById('q-num').textContent = state.currentIdx;
+  document.getElementById('q-unit-badge').textContent = UNIT_LABELS[q.unit] || q.unit;
+  document.getElementById('q-unit-badge').className = 'badge ' + (UNIT_THEMES[q.unit] || 'theme1');
+  document.getElementById('q-type-badge').textContent = q.type === 'mcq' ? 'MCQ' : 'Short Answer';
+  document.getElementById('q-topic').textContent = q.topic;
+  document.getElementById('q-text').textContent = q.q;
+
+  if (q.extract) {
+    const ex = document.getElementById('q-extract');
+    ex.style.display = 'block';
+    ex.textContent = q.extract;
+  }
+
+  updateStats();
+  if (q.type === 'mcq') renderMCQ(q);
+  else renderShort(q);
+  startTimer();
+}
+
+function renderMCQ(q) {
+  const area = document.getElementById('mcq-area');
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.textContent = opt;
+    btn.onclick = () => answerMCQ(i);
+    area.appendChild(btn);
+  });
+}
+
+function renderShort(q) {
+  document.getElementById('short-area').style.display = 'flex';
+  document.getElementById('hint-text').textContent = state.difficulty !== 'hard' ? 'Hint: ' + (q.hint || '') : '';
+}
+
+function answerMCQ(chosen) {
+  if (state.answered_q) return;
+  state.answered_q = true;
+  clearTimer();
+  const q = state.current;
+  const btns = document.querySelectorAll('.opt-btn');
+  btns.forEach(b => b.disabled = true);
+  const correct = chosen === q.ans;
+  btns[chosen].classList.add(correct ? 'correct' : 'wrong');
+  if (!correct) btns[q.ans].classList.add('correct');
+  recordAnswer(correct, q);
+  showFeedback(correct, q.exp);
+}
+
+function submitShort() {
+  if (state.answered_q) return;
+  state.answered_q = true;
+  clearTimer();
+  const q = state.current;
+  const answer = document.getElementById('short-input').value;
+  document.getElementById('short-input').disabled = true;
+
+  const matched = q.keywords.filter(kw => fuzzyMatch(kw, answer));
+  const threshold = Math.max(2, Math.floor(q.keywords.length * 0.35));
+  const correct = matched.length >= threshold;
+
+  recordAnswer(correct, q);
+  showFeedback(correct, q.exp, matched, q.keywords);
+}
+
+function skipQ() {
+  if (state.answered_q) return;
+  state.answered_q = true;
+  clearTimer();
+  recordAnswer(false, state.current);
+  showFeedback(false, state.current.exp);
+}
+
+function recordAnswer(correct, q) {
+  if (!state.topicStats[q.topic]) state.topicStats[q.topic] = {c:0,w:0};
+  if (correct) { state.correct++; state.topicStats[q.topic].c++; }
+  else { state.wrong++; state.topicStats[q.topic].w++; state.repeatPool.push(q); state.missedQs.push({q:q.q,exp:q.exp}); }
+  state.answered++;
+  updateStats();
+  updateProgress();
+}
+
+function showFeedback(correct, exp, matched, keywords) {
+  const box   = document.getElementById('feedback-box');
+  const title = document.getElementById('feedback-title');
+  const body  = document.getElementById('feedback-body');
+  box.className = 'feedback-box ' + (correct ? 'correct' : 'incorrect');
+  title.textContent = correct ? 'Correct' : 'Incorrect';
+  let text = exp;
+  if (!correct && matched && keywords) {
+    const missing = keywords.filter(k => !matched.some(m => m.toLowerCase() === k.toLowerCase()));
+    text = 'Keywords matched: ' + (matched.join(', ') || 'none') +
+           '\nMissing concepts: ' + (missing.join(', ') || 'none') +
+           '\n\n' + exp;
+  }
+  if (!correct && state.repeatPool.length > 0) text += '\n\nThis question will repeat until correct.';
+  body.textContent = text;
+  document.getElementById('feedback-area').style.display = 'block';
+}
+
+function updateStats() {
+  const total = state.answered;
+  const pct = total > 0 ? Math.round(state.correct / total * 100) : '—';
+  document.getElementById('stat-correct').textContent = state.correct;
+  document.getElementById('stat-wrong').textContent = state.wrong;
+  document.getElementById('stat-pct').textContent = total > 0 ? pct + '%' : '—';
+  document.getElementById('stat-repeat').textContent = state.repeatPool.length;
+}
+
+function updateProgress() {
+  const pct = Math.min(100, Math.round(state.answered / state.totalOriginal * 100));
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+function startTimer() {
+  state.timeLeft = state.maxTime;
+  updateTimerBar(state.timeLeft);
+  state.timerInterval = setInterval(() => {
+    state.timeLeft--;
+    updateTimerBar(state.timeLeft);
+    if (state.timeLeft <= 0) { clearTimer(); if (!state.answered_q) timeOut(); }
+  }, 1000);
+}
+
+function clearTimer() { clearInterval(state.timerInterval); }
+
+function updateTimerBar(t) {
+  const pct = Math.max(0, t / state.maxTime * 100);
+  const bar = document.getElementById('timer-bar');
+  bar.style.width = pct + '%';
+  bar.style.background = pct > 50 ? '#fff' : pct > 25 ? '#ffd24a' : '#ff6b6b';
+  document.getElementById('timer-text').textContent = t;
+}
+
+function timeOut() {
+  state.answered_q = true;
+  const q = state.current;
+  if (q.type === 'mcq') {
+    document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+    document.querySelectorAll('.opt-btn')[q.ans].classList.add('correct');
+  } else {
+    document.getElementById('short-input').disabled = true;
+  }
+  recordAnswer(false, q);
+  document.body.classList.add('timeout-flash');
+  setTimeout(() => document.body.classList.remove('timeout-flash'), 300);
+  const box = document.getElementById('feedback-box');
+  box.className = 'feedback-box incorrect';
+  document.getElementById('feedback-title').textContent = 'Time is up';
+  document.getElementById('feedback-body').textContent = q.exp + '\n\nThis question will repeat.';
+  document.getElementById('feedback-area').style.display = 'block';
+}
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('results-screen').style.display = 'block';
+
+  const pct = state.answered > 0 ? Math.round(state.correct / state.answered * 100) : 0;
+  document.getElementById('final-pct').textContent = pct + '%';
+  let label = '';
+  if (pct >= 90) label = 'Excellent. A+ ready.';
+  else if (pct >= 75) label = 'Strong work. Review weak topics for that A+.';
+  else if (pct >= 60) label = 'Passing. More revision needed.';
+  else label = 'Needs more study. Retry missed questions.';
+  document.getElementById('final-label').textContent = label;
+
+  const bd = document.getElementById('topic-breakdown');
+  bd.innerHTML = '<h3>Topic Breakdown</h3>';
+  for (const [topic, s] of Object.entries(state.topicStats)) {
+    const total = s.c + s.w;
+    const p = Math.round(s.c / total * 100);
+    const cls = p >= 75 ? 'strong' : p >= 50 ? 'ok' : 'weak';
+    const row = document.createElement('div');
+    row.className = 'brow';
+    row.innerHTML = `<span>${topic}</span><span class="${cls}">${s.c}/${total} (${p}%)</span>`;
+    bd.appendChild(row);
+  }
+
+  if (state.missedQs.length > 0) {
+    const ml = document.getElementById('missed-list');
+    ml.innerHTML = '<h3>Questions You Missed</h3>';
+    const seen = new Set();
+    state.missedQs.forEach(m => {
+      if (!seen.has(m.q)) {
+        seen.add(m.q);
+        const d = document.createElement('div');
+        d.className = 'missed-item';
+        d.innerHTML = `<div class="mq">${m.q}</div><div class="ma">${m.exp}</div>`;
+        ml.appendChild(d);
+      }
+    });
+  }
+}
+
+function restartMissed() {
+  if (state.missedQs.length === 0) { location.reload(); return; }
+  const seen = new Set();
+  const unique = [];
+  state.missedQs.forEach(m => { if (!seen.has(m.q)) { seen.add(m.q); unique.push(m.q); } });
+  const pool = ALL_QUESTIONS.filter(q => unique.includes(q.q));
+  state.queue = shuffle(pool);
+  state.repeatPool = [];
+  state.correct = 0; state.wrong = 0; state.answered = 0;
+  state.currentIdx = 0; state.topicStats = {}; state.missedQs = [];
+  state.totalOriginal = pool.length;
+  document.getElementById('q-total').textContent = pool.length;
+  document.getElementById('results-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  nextQuestion();
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+</script>
+</body>
+</html>

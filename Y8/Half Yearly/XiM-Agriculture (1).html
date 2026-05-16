@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agriculture Exam Prep – Units 8.2 & 8.3</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0d0d0d; color: #f0f0f0; font-family: 'Segoe UI', 'Inter', 'Helvetica Neue', Arial, sans-serif; min-height: 100vh; }
+  #app { max-width: 860px; margin: 0 auto; padding: 20px; }
+
+  h1 { font-size: 1.5rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+  .sub { color: #888; font-size: 0.8rem; margin-bottom: 30px; }
+
+  /* START SCREEN */
+  #start-screen { text-align: center; padding: 40px 20px; }
+  #start-screen h1 { font-size: 2rem; margin-bottom: 8px; }
+  .section-pick { display: flex; gap: 12px; justify-content: center; margin: 24px 0 12px; flex-wrap: wrap; }
+  .pill { padding: 8px 18px; border: 1px solid #444; border-radius: 20px; cursor: pointer; font-family: inherit; font-size: 0.85rem; background: #111; color: #f0f0f0; transition: all 0.15s; }
+  .pill.active { border-color: #fff; background: #fff; color: #000; }
+  .pill:hover { border-color: #aaa; }
+  .diff-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0; }
+  .diff-card { border: 1px solid #333; border-radius: 8px; padding: 16px 12px; cursor: pointer; transition: all 0.15s; background: #111; }
+  .diff-card.active { border-color: #fff; }
+  .diff-card h3 { font-size: 0.95rem; margin-bottom: 4px; }
+  .diff-card p { font-size: 0.75rem; color: #888; }
+  .start-btn { margin-top: 28px; padding: 14px 48px; font-size: 1rem; font-family: inherit; background: #fff; color: #000; border: none; border-radius: 6px; cursor: pointer; letter-spacing: 1px; text-transform: uppercase; font-weight: bold; }
+  .start-btn:hover { background: #ddd; }
+
+  /* QUIZ SCREEN */
+  #quiz-screen { display: none; }
+  .topbar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+  .badge { font-size: 0.72rem; padding: 3px 9px; border: 1px solid #444; border-radius: 4px; color: #aaa; }
+  .badge.unit82 { border-color: #4a9eff; color: #4a9eff; }
+  .badge.unit83 { border-color: #4eff9a; color: #4eff9a; }
+  .badge.easy { border-color: #4eff9a; color: #4eff9a; }
+  .badge.medium { border-color: #ffd24a; color: #ffd24a; }
+  .badge.hard { border-color: #ff6b6b; color: #ff6b6b; }
+  .timer-bar-wrap { flex: 1; min-width: 120px; height: 6px; background: #222; border-radius: 3px; overflow: hidden; }
+  .timer-bar { height: 100%; background: #fff; border-radius: 3px; transition: width 0.5s linear, background 0.5s; }
+  .timer-text { font-size: 0.8rem; color: #aaa; min-width: 30px; text-align: right; }
+
+  .stats-row { display: flex; gap: 20px; margin-bottom: 18px; font-size: 0.8rem; color: #888; flex-wrap: wrap; }
+  .stats-row span b { color: #f0f0f0; }
+
+  .progress-outer { background: #1a1a1a; border-radius: 4px; height: 4px; margin-bottom: 24px; }
+  .progress-inner { height: 4px; background: #555; border-radius: 4px; transition: width 0.3s; }
+
+  .topic-label { font-size: 0.72rem; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .question-text { font-size: 1.05rem; line-height: 1.6; margin-bottom: 22px; color: #f0f0f0; }
+
+  /* MCQ */
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .opt-btn { padding: 12px 16px; background: #111; border: 1px solid #333; border-radius: 6px; color: #f0f0f0; font-family: inherit; font-size: 0.9rem; text-align: left; cursor: pointer; transition: all 0.12s; line-height: 1.4; }
+  .opt-btn:hover:not(:disabled) { border-color: #888; background: #1a1a1a; }
+  .opt-btn.correct { border-color: #4eff9a; background: #0a2a18; color: #4eff9a; }
+  .opt-btn.wrong { border-color: #ff6b6b; background: #2a0a0a; color: #ff6b6b; }
+  .opt-btn:disabled { cursor: default; }
+
+  /* SHORT ANSWER */
+  .short-wrap { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  textarea { background: #111; border: 1px solid #333; border-radius: 6px; color: #f0f0f0; font-family: inherit; font-size: 0.9rem; padding: 12px; resize: vertical; min-height: 90px; width: 100%; }
+  textarea:focus { outline: none; border-color: #888; }
+  .hint-text { font-size: 0.75rem; color: #666; font-style: italic; }
+
+  .action-btn { padding: 10px 24px; font-family: inherit; font-size: 0.85rem; background: #fff; color: #000; border: none; border-radius: 5px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
+  .action-btn:hover { background: #ddd; }
+  .action-btn.secondary { background: transparent; color: #888; border: 1px solid #333; }
+  .action-btn.secondary:hover { color: #f0f0f0; border-color: #888; }
+
+  .feedback-box { padding: 14px 16px; border-radius: 6px; margin-bottom: 16px; font-size: 0.88rem; line-height: 1.6; }
+  .feedback-box.correct { background: #0a2a18; border: 1px solid #4eff9a; color: #b0ffd0; }
+  .feedback-box.incorrect { background: #2a0a0a; border: 1px solid #ff6b6b; color: #ffb0b0; }
+  .feedback-box strong { display: block; margin-bottom: 6px; font-size: 0.95rem; }
+
+  /* RESULTS */
+  #results-screen { display: none; text-align: center; padding: 40px 20px; }
+  .big-score { font-size: 4rem; font-weight: bold; margin: 20px 0 6px; }
+  .score-label { color: #888; margin-bottom: 30px; }
+  .breakdown { text-align: left; border: 1px solid #222; border-radius: 8px; padding: 20px; margin: 20px 0; }
+  .breakdown h3 { margin-bottom: 12px; font-size: 0.9rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+  .brow { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #1a1a1a; font-size: 0.85rem; }
+  .brow:last-child { border: none; }
+  .brow .weak { color: #ff6b6b; }
+  .brow .ok { color: #ffd24a; }
+  .brow .strong { color: #4eff9a; }
+  .missed-list { text-align: left; margin: 20px 0; }
+  .missed-list h3 { margin-bottom: 10px; color: #aaa; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+  .missed-item { padding: 8px 12px; border-left: 2px solid #ff6b6b; margin-bottom: 8px; font-size: 0.82rem; background: #150a0a; border-radius: 0 4px 4px 0; }
+  .missed-item .mq { color: #ffb0b0; margin-bottom: 3px; }
+  .missed-item .ma { color: #888; }
+  .btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+
+  /* TIMEOUT */
+  .timeout-flash { animation: flash 0.3s ease; }
+  @keyframes flash { 0%,100%{background:#0d0d0d} 50%{background:#2a0000} }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- START SCREEN -->
+<div id="start-screen">
+  <h1>Agriculture Exam Prep</h1>
+  <div class="sub">James Ruse – Stage 5 | Units 8.2 Poultry & 8.3 Brassica</div>
+
+  <div style="margin-bottom:8px;font-size:0.8rem;color:#888;text-transform:uppercase;letter-spacing:1px;">Topics</div>
+  <div class="section-pick">
+    <button class="pill active" onclick="toggleSection('both')">Both Units</button>
+    <button class="pill" onclick="toggleSection('82')">8.2 Poultry Only</button>
+    <button class="pill" onclick="toggleSection('83')">8.3 Brassica Only</button>
+  </div>
+
+  <div style="margin:24px 0 8px;font-size:0.8rem;color:#888;text-transform:uppercase;letter-spacing:1px;">Difficulty (Time Limit per Question)</div>
+  <div class="diff-grid">
+    <div class="diff-card active" onclick="setDiff('easy')" id="dc-easy">
+      <h3>Easy</h3>
+      <p>60 sec / question<br>Simple recall</p>
+    </div>
+    <div class="diff-card" onclick="setDiff('medium')" id="dc-medium">
+      <h3>Medium</h3>
+      <p>40 sec / question<br>Application</p>
+    </div>
+    <div class="diff-card" onclick="setDiff('hard')" id="dc-hard">
+      <h3>Hard</h3>
+      <p>20 sec / question<br>No hints, harder Qs</p>
+    </div>
+  </div>
+
+  <div style="font-size:0.78rem;color:#666;margin-top:8px;">Adaptive mode: missed questions repeat until correct. All topics covered.</div>
+  <button class="start-btn" onclick="startQuiz()">▶ START</button>
+</div>
+
+<!-- QUIZ SCREEN -->
+<div id="quiz-screen">
+  <div class="topbar">
+    <span id="q-unit-badge" class="badge unit82">Unit 8.2</span>
+    <span id="q-diff-badge" class="badge easy">Easy</span>
+    <span id="q-type-badge" class="badge" style="border-color:#888;color:#888;">MCQ</span>
+    <div class="timer-bar-wrap"><div class="timer-bar" id="timer-bar"></div></div>
+    <div class="timer-text" id="timer-text">60</div>
+  </div>
+
+  <div class="stats-row">
+    <span>Q <b id="q-num">1</b>/<b id="q-total">?</b></span>
+    <span>✓ <b id="stat-correct">0</b></span>
+    <span>✗ <b id="stat-wrong">0</b></span>
+    <span>% <b id="stat-pct">—</b></span>
+    <span style="color:#ffd24a">⟳ <b id="stat-repeat">0</b> repeating</span>
+  </div>
+  <div class="progress-outer"><div class="progress-inner" id="progress-bar"></div></div>
+
+  <div class="topic-label" id="q-topic">Topic</div>
+  <div class="question-text" id="q-text">Question loads here</div>
+
+  <div id="mcq-area" class="options"></div>
+  <div id="short-area" class="short-wrap" style="display:none;">
+    <textarea id="short-input" placeholder="Type your answer…"></textarea>
+    <div class="hint-text" id="hint-text"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="action-btn" onclick="submitShort()">Submit</button>
+      <button class="action-btn secondary" onclick="skipQ()">Skip</button>
+    </div>
+  </div>
+
+  <div id="feedback-area" style="display:none;">
+    <div class="feedback-box" id="feedback-box">
+      <strong id="feedback-title"></strong>
+      <span id="feedback-body"></span>
+    </div>
+    <button class="action-btn" onclick="nextQuestion()">Next →</button>
+  </div>
+</div>
+
+<!-- RESULTS SCREEN -->
+<div id="results-screen">
+  <h1>Results</h1>
+  <div class="big-score" id="final-pct">0%</div>
+  <div class="score-label" id="final-label">Keep studying!</div>
+
+  <div class="breakdown" id="topic-breakdown"></div>
+  <div class="missed-list" id="missed-list"></div>
+
+  <div class="btn-row">
+    <button class="action-btn" onclick="restartMissed()">Retry Missed Only</button>
+    <button class="action-btn secondary" onclick="location.reload()">Start Over</button>
+  </div>
+</div>
+
+</div><!-- #app -->
+
+<script>
+// ===================== QUESTION BANK =====================
+const ALL_QUESTIONS = [
+
+// ===== UNIT 8.2 POULTRY =====
+// Housing / Production Systems
+{unit:'82',topic:'Housing & Production Systems',diff:'easy',type:'mcq',
+ q:'Which of the following is NOT a basic need of poultry?',
+ opts:['Feed and water','Shelter/housing','Ability to fly long distances','Light for egg production'],
+ ans:2, exp:'Basic needs: feed, water, shelter, light, space, ventilation, health care. Long-distance flight is not a need.'},
+
+{unit:'82',topic:'Housing & Production Systems',diff:'easy',type:'mcq',
+ q:'In a barn (cage-free) system, hens are kept:',
+ opts:['In individual battery cages','Free to roam inside a large shed','Entirely outdoors on pasture','In small furnished cages'],
+ ans:1, exp:'Barn/cage-free: hens roam freely inside an enclosed shed with litter floor, perches, and nesting boxes.'},
+
+{unit:'82',topic:'Housing & Production Systems',diff:'medium',type:'mcq',
+ q:'Which production system typically gives hens the MOST outdoor access?',
+ opts:['Battery cage','Barn system','Free-range system','Furnished cage'],
+ ans:2, exp:'Free-range requires hens have continuous daytime access to an outdoor range.'},
+
+{unit:'82',topic:'Housing & Production Systems',diff:'medium',type:'short',
+ q:'Name THREE differences between a battery cage system and a free-range system.',
+ keywords:['cage','range','outdoor','space','access','perch','nest','density','welfare','litter','stocking'],
+ hint:'Think about space, outdoor access, nesting, and welfare.',
+ exp:'Battery cage: confined, no outdoor access, high density, no perches/nesting. Free-range: outdoor access required, lower density, perches and nesting boxes, litter floor.'},
+
+{unit:'82',topic:'Housing & Production Systems',diff:'hard',type:'short',
+ q:'Outline TWO advantages and TWO disadvantages of the free-range production system compared to barn.',
+ keywords:['welfare','consumer','premium','price','disease','predator','weather','cost','space'],
+ hint:'Think economics, animal welfare, disease, predators.',
+ exp:'Advantages: better animal welfare, consumer preference/premium price. Disadvantages: higher disease/predator risk, more land required, higher production costs.'},
+
+// Calendar of Operations
+{unit:'82',topic:'Calendar of Operations',diff:'easy',type:'mcq',
+ q:'What is a "pullet" in poultry production?',
+ opts:['A mature laying hen over 2 years','A young female chicken not yet laying','A male chicken (rooster)','A fertilised egg in the incubator'],
+ ans:1, exp:'A pullet is a young female chicken, typically under 1 year old, before or just starting to lay eggs.'},
+
+{unit:'82',topic:'Calendar of Operations',diff:'medium',type:'mcq',
+ q:'Approximately what age do pullets start laying eggs commercially?',
+ opts:['8–10 weeks','18–20 weeks','30–35 weeks','52 weeks'],
+ ans:1, exp:'Pullets typically start laying at 18–20 weeks of age (about 4–5 months).'},
+
+{unit:'82',topic:'Calendar of Operations',diff:'medium',type:'short',
+ q:'List FOUR routine management practices carried out in a barn egg-laying operation.',
+ keywords:['feed','water','collect','egg','clean','litter','vaccin','light','cull','health','record','ventil'],
+ hint:'Think daily, weekly and periodic tasks.',
+ exp:'Daily: feed & water, egg collection, health checks. Weekly: clean equipment, check litter. Periodic: vaccination, culling, litter replacement, lighting adjustments, record keeping.'},
+
+// WHS
+{unit:'82',topic:'Work Health & Safety',diff:'easy',type:'mcq',
+ q:'Which of the following is a major WHS hazard when working in poultry sheds?',
+ opts:['Excessive UV light from eggs','Dust and ammonia from litter','High levels of carbon dioxide only','Noise from egg-sorting machines only'],
+ ans:1, exp:'Dust (from feathers/litter/feed) and ammonia (from urine/manure) are the primary respiratory and health hazards in poultry sheds.'},
+
+{unit:'82',topic:'Work Health & Safety',diff:'medium',type:'short',
+ q:'Describe TWO health hazards in a poultry shed and a control measure for each.',
+ keywords:['dust','ammonia','mask','respirat','ventil','ppe','glove','boot','disinfect','zoonos','litter','manure'],
+ hint:'Dust, ammonia, zoonotic diseases. Controls = PPE, ventilation, hygiene.',
+ exp:'1. Dust – wear P2 respirator/mask, good ventilation. 2. Ammonia – ventilation, regular litter removal, PPE. Also: zoonotic diseases – gloves, boots, wash hands.'},
+
+// Anatomy
+{unit:'82',topic:'Anatomy – Digestive Tract',diff:'easy',type:'mcq',
+ q:'What is the function of the gizzard in a hen?',
+ opts:['Produces digestive enzymes (like a stomach)','Grinds up food using muscular walls and grit','Absorbs nutrients into the bloodstream','Stores bile for fat digestion'],
+ ans:1, exp:'The gizzard is a muscular organ that mechanically grinds food, especially grain, using grit. It replaces the chewing function that teeth would do in mammals.'},
+
+{unit:'82',topic:'Anatomy – Digestive Tract',diff:'easy',type:'mcq',
+ q:'What is the correct order of food passing through a hen\'s digestive tract?',
+ opts:['Oesophagus → Crop → Proventriculus → Gizzard → Small Intestine',
+       'Crop → Oesophagus → Gizzard → Proventriculus → Small Intestine',
+       'Oesophagus → Proventriculus → Crop → Gizzard → Small Intestine',
+       'Gizzard → Proventriculus → Oesophagus → Crop → Cloaca'],
+ ans:0, exp:'Beak → Oesophagus → Crop (storage) → Proventriculus (chemical digestion) → Gizzard (mechanical grinding) → Small intestine (absorption) → Cloaca (exit).'},
+
+{unit:'82',topic:'Anatomy – Digestive Tract',diff:'medium',type:'mcq',
+ q:'The proventriculus in a hen is best described as:',
+ opts:['A muscular grinding organ','The true stomach – secretes acid and enzymes','A storage pouch in the oesophagus','The exit point for faeces and eggs'],
+ ans:1, exp:'The proventriculus is the glandular stomach of a bird. It secretes hydrochloric acid and digestive enzymes (pepsinogen) to begin chemical digestion before food passes to the gizzard.'},
+
+{unit:'82',topic:'Anatomy – Digestive Tract',diff:'easy',type:'mcq',
+ q:'What is the cloaca?',
+ opts:['A section of the small intestine','The common exit chamber for digestive, urinary and reproductive systems','The muscular grinding stomach','The crop storage pouch'],
+ ans:1, exp:'The cloaca is the common chamber at the end of a hen\'s digestive, urinary, and reproductive tracts. Both eggs and faeces pass through it.'},
+
+{unit:'82',topic:'Anatomy – Digestive Tract',diff:'hard',type:'short',
+ q:'State the function of EACH of the following parts of a hen\'s digestive system: oesophagus, crop, proventriculus, gizzard, cloaca.',
+ keywords:['oesophagus','transport','crop','store','proventriculus','enzyme','acid','gizzard','grind','cloaca','exit'],
+ hint:'Name the function of each organ specifically.',
+ exp:'Oesophagus: transports food from beak to crop. Crop: temporary storage of food. Proventriculus: secretes digestive acids/enzymes (chemical digestion). Gizzard: mechanical grinding of food using grit. Cloaca: common exit for faeces, urine and eggs.'},
+
+// Reproductive organs
+{unit:'82',topic:'Anatomy – Reproduction',diff:'easy',type:'mcq',
+ q:'In a hen, where does fertilisation of the egg occur (if a rooster is present)?',
+ opts:['In the cloaca','At the top of the oviduct (infundibulum)','In the shell gland (uterus)','In the ovary'],
+ ans:1, exp:'Fertilisation occurs in the infundibulum (the funnel-shaped top of the oviduct) shortly after the yolk is released from the ovary.'},
+
+{unit:'82',topic:'Anatomy – Reproduction',diff:'medium',type:'mcq',
+ q:'Which part of the oviduct adds the egg white (albumen) around the yolk?',
+ opts:['Infundibulum','Magnum','Isthmus','Shell gland (uterus)'],
+ ans:1, exp:'The magnum is the longest section of the oviduct and secretes albumen (egg white) around the yolk. Takes about 3 hours.'},
+
+{unit:'82',topic:'Anatomy – Reproduction',diff:'hard',type:'short',
+ q:'Trace an egg from ovulation to laying, naming the key structures and what happens at each stage.',
+ keywords:['ovary','infundibulum','magnum','albumen','isthmus','membrane','shell','uterus','cloaca','oviduct'],
+ hint:'Ovary → infundibulum → magnum → isthmus → shell gland → cloaca',
+ exp:'Ovary: yolk (ovum) develops and released. Infundibulum: fertilisation if mating occurred. Magnum: albumen added. Isthmus: shell membranes added. Shell gland/uterus: calcified shell added (takes ~20 hrs). Cloaca: egg exits body.'},
+
+// Nutrition
+{unit:'82',topic:'Nutrition',diff:'easy',type:'mcq',
+ q:'What is the PRIMARY role of grain (e.g. wheat, corn) in layer pellets?',
+ opts:['Provide protein for feather growth','Provide energy (carbohydrates)','Provide calcium for shell formation','Provide vitamins A and D'],
+ ans:1, exp:'Grain provides carbohydrates as the main energy source for hens.'},
+
+{unit:'82',topic:'Nutrition',diff:'easy',type:'mcq',
+ q:'Why is Vitamin D important in a layer hen\'s diet?',
+ opts:['It helps feather pigmentation','It is needed for absorption of calcium and phosphorus for shell formation','It stimulates egg production directly','It prevents coccidiosis'],
+ ans:1, exp:'Vitamin D3 is essential for calcium absorption in the intestine. Without it, shells become thin and brittle, and bones weaken (cage layer fatigue).'},
+
+{unit:'82',topic:'Nutrition',diff:'medium',type:'mcq',
+ q:'What nutritional role does meal (e.g. soybean meal, meat meal) play in layer pellets?',
+ opts:['Energy source','Protein source for egg production and body maintenance','Calcium source for shells','Fibre source for gut health'],
+ ans:1, exp:'Protein meals (soybean, canola, meat/bone meal) supply amino acids needed for egg albumen production and feather/tissue maintenance.'},
+
+{unit:'82',topic:'Nutrition',diff:'medium',type:'short',
+ q:'For layer pellets, list the main ingredients and the nutritional role of each: grain, meal, fat, Vitamin D, and minerals.',
+ keywords:['grain','energy','carbohydrate','meal','protein','fat','energy','vitamin d','calcium','absorption','mineral','shell'],
+ hint:'Each ingredient meets a specific nutritional need.',
+ exp:'Grain: energy/carbohydrates. Meal (soybean etc.): protein for egg production. Fat: concentrated energy, fat-soluble vitamin carrier. Vitamin D: calcium/phosphorus absorption. Minerals (calcium/limestone): eggshell formation and bone strength.'},
+
+// Pests & Diseases
+{unit:'82',topic:'Pests & Diseases',diff:'easy',type:'mcq',
+ q:'What are the main SYMPTOMS of lice/mite infestation in poultry?',
+ opts:['Green diarrhoea and sudden death','Feather loss, skin irritation, reduced egg production, anaemia','Swollen head and respiratory distress','Paralysis and nervous signs'],
+ ans:1, exp:'Lice and mites cause: feather loss (self-plucking due to itch), skin irritation, restlessness, reduced laying, and in severe cases anaemia (especially red mite which feeds on blood at night).'},
+
+{unit:'82',topic:'Pests & Diseases',diff:'medium',type:'mcq',
+ q:'Which of the following best describes Coccidiosis in poultry?',
+ opts:['A viral respiratory disease spread by air','A protozoal intestinal disease spread by faecal contamination','A bacterial skin disease spread by mites','A fungal disease of the feed'],
+ ans:1, exp:'Coccidiosis is caused by Eimeria protozoa. It infects the intestinal lining. Spread via faecal contamination of feed and water. Young birds most susceptible.'},
+
+{unit:'82',topic:'Pests & Diseases',diff:'medium',type:'mcq',
+ q:'What are the main symptoms of Coccidiosis?',
+ opts:['Crusty scabs around eyes and beak only','Bloody diarrhoea, weight loss, ruffled feathers, lethargy, high mortality','Loss of feathers and skin irritation','Swollen joints and lameness'],
+ ans:1, exp:'Coccidiosis symptoms: bloody diarrhoea (haemorrhagic intestines), lethargy, weight loss, ruffled feathers, huddling, high mortality in young birds.'},
+
+{unit:'82',topic:'Pests & Diseases',diff:'hard',type:'short',
+ q:'Describe a control and prevention program for Coccidiosis, including reference to its life cycle.',
+ keywords:['eimeria','protozoa','oocyst','faec','litter','clean','dry','coccidiostat','medic','vaccin','biosecurit','young','immun'],
+ hint:'Life cycle: oocyst → ingested → intestine → shed in faeces. Controls: hygiene, coccidiostats, vaccination.',
+ exp:'Life cycle: Eimeria oocysts passed in faeces → contaminate litter/water → ingested → multiply in intestinal cells → damage gut lining → shed more oocysts. Control: keep litter dry, clean water systems, use coccidiostats in feed (amprolium), live oocyst vaccination, quarantine new birds, all-in all-out management.'},
+
+{unit:'82',topic:'Pests & Diseases',diff:'hard',type:'short',
+ q:'Describe the life cycle of red mite and outline a control program for lice/mites in poultry.',
+ keywords:['mite','egg','nymph','adult','night','blood','litter','host','acaricide','dusting','powder','perch','clean','disinfect','treat'],
+ hint:'Red mites hide in cracks by day, feed at night. Control: acaricides, cleaning, dusting.',
+ exp:'Red mite life cycle: eggs laid in cracks/perches → hatch to nymphs → feed on bird blood at night → mature to adults in 7 days. Control: treat birds with acaricide/dust (e.g. permethrin), thoroughly clean and treat housing including cracks, remove old litter, repeat treatment after 7–10 days to break cycle.'},
+
+// Economic Importance
+{unit:'82',topic:'Economic Importance',diff:'easy',type:'mcq',
+ q:'Australia\'s egg industry is primarily important because:',
+ opts:['It produces fertilised eggs only for export','It is one of Australia\'s largest animal agricultural industries, producing hundreds of millions of dozen eggs per year for domestic consumption','It is mainly for backyard/hobby production','Eggs are primarily used for industrial rather than food purposes'],
+ ans:1, exp:'The Australian egg industry produces over 6 billion eggs per year, worth over $1 billion, making it a major agricultural sector. Most production is for domestic food consumption.'},
+
+{unit:'82',topic:'Economic Importance',diff:'medium',type:'short',
+ q:'Use industry figures to describe the importance of the Australian egg industry.',
+ keywords:['billion','million','industry','value','dozen','production','employ','farm','NSW','Australia','capita','consumption'],
+ hint:'Include production volumes, farm numbers, employment, value.',
+ exp:'Australia produces ~6+ billion eggs/year. Industry worth ~$1 billion+. Over 400 commercial farms. Largest production states: NSW and Victoria. Per capita consumption ~200 eggs/year. Employs thousands directly and indirectly. Major protein food source for Australians.'},
+
+// Egg Nutritional Value
+{unit:'82',topic:'Egg Nutritional Value',diff:'easy',type:'mcq',
+ q:'Eggs are considered a "complete protein" because:',
+ opts:['They contain only plant-based protein','They contain all essential amino acids the human body cannot make','They have no fat content','They are the only food that contains Vitamin D'],
+ ans:1, exp:'Eggs contain all 9 essential amino acids in good proportions, making them a complete, high-quality protein source (biological value ~100).'},
+
+{unit:'82',topic:'Egg Nutritional Value',diff:'medium',type:'mcq',
+ q:'Which vitamin found abundantly in eggs is important for eye health and vision?',
+ opts:['Vitamin C','Vitamin K','Vitamin A','Vitamin B12 only'],
+ ans:2, exp:'Egg yolks are rich in Vitamin A (and lutein/zeaxanthin), which is essential for vision and eye health. Eggs also contain B12, D, and riboflavin.'},
+
+{unit:'82',topic:'Egg Nutritional Value',diff:'medium',type:'short',
+ q:'Outline the nutritional value of eggs for humans.',
+ keywords:['protein','fat','vitamin','mineral','iron','zinc','choline','yolk','white','energy','calcium','complete','amino'],
+ hint:'Protein, fats, vitamins (A, D, B12), minerals, choline.',
+ exp:'Eggs provide: high-quality complete protein (~6g/egg), fat (mostly in yolk including saturated and unsaturated), Vitamins A, D, E, B2, B12, folate, minerals (iron, zinc, selenium, phosphorus), choline (brain health), and lutein/zeaxanthin (eye health). ~300kJ per egg.'},
+
+// Egg Marketing
+{unit:'82',topic:'Egg Marketing',diff:'easy',type:'mcq',
+ q:'What is the typical sequence in the egg marketing pathway from farm to consumer?',
+ opts:['Farm → Consumer (direct only)','Farm → Packing station → Wholesaler/Distributor → Retailer → Consumer',
+       'Farm → Retailer → Consumer (always direct)','Farm → Export → Consumer'],
+ ans:1, exp:'Most eggs: Farm → Grading/packing facility → Wholesale distributor → Retail supermarket/store → Consumer. Some farms sell direct or to foodservice.'},
+
+{unit:'82',topic:'Egg Marketing',diff:'medium',type:'short',
+ q:'Describe the marketing pathway for eggs from production to the consumer.',
+ keywords:['farm','grade','pack','candle','wash','weight','carton','wholesale','distribut','retail','supermarket','consumer','date','label'],
+ hint:'Include grading, packing, labelling, distribution, retail.',
+ exp:'Farm → Collected eggs transported to grading/packing facility → Candled (checked for cracks, blood spots), washed, graded by weight (59g+ = 700g dozen) → Packed in cartons with best-before date and production system label → Sold to wholesale distributors → Supermarkets/retailers → Consumer. Some direct farm gate or farmers market sales.'},
+
+// Spelling/Vocab
+{unit:'82',topic:'Vocabulary',diff:'easy',type:'mcq',
+ q:'What does a "brooder" do?',
+ opts:['Lay eggs at an accelerated rate','Provide warmth for newly hatched chicks','Grind feed into pellets','Test egg freshness'],
+ ans:1, exp:'A brooder is a heated device/space that keeps day-old chicks warm (35°C at hatch, reduced 3°C/week) since they cannot regulate their own body temperature.'},
+
+{unit:'82',topic:'Vocabulary',diff:'easy',type:'mcq',
+ q:'An incubator in poultry production is used to:',
+ opts:['Store eggs at low temperature to extend shelf life','Artificially hatch eggs by maintaining correct temperature, humidity and turning','Vaccinate large numbers of chicks automatically','Produce layer pellets from raw grain'],
+ ans:1, exp:'An incubator maintains ~37.8°C temperature, 55–65% humidity, and automatically turns eggs to replicate a brooding hen, allowing eggs to hatch without a mother hen.'},
+
+// ===== UNIT 8.3 BRASSICA =====
+// Classification
+{unit:'83',topic:'Classification',diff:'easy',type:'mcq',
+ q:'Which of the following is a member of the Brassica family?',
+ opts:['Tomato','Cauliflower','Carrot','Onion'],
+ ans:1, exp:'Cauliflower (Brassica oleracea var. botrytis) is a member of the Brassicaceae family. Others in the family include broccoli, cabbage, kale, Brussels sprouts, kohlrabi, bok choy.'},
+
+{unit:'83',topic:'Classification',diff:'easy',type:'mcq',
+ q:'The scientific genus name for most Brassica vegetables is:',
+ opts:['Solanum','Brassica','Allium','Lactuca'],
+ ans:1, exp:'All brassica vegetables belong to the genus Brassica in the family Brassicaceae (or Cruciferae). Broccoli = B. oleracea var. italica, Cabbage = B. oleracea var. capitata.'},
+
+{unit:'83',topic:'Classification',diff:'medium',type:'short',
+ q:'Name SIX members of the Brassica plant family.',
+ keywords:['broccoli','cauliflower','cabbage','kale','brussels','kohlrabi','bok choy','turnip','swede','canola','mustard','rocket','radish'],
+ hint:'Include at least 6 brassica vegetables.',
+ exp:'Broccoli, cauliflower, cabbage, Brussels sprouts, kale, kohlrabi, bok choy, pak choy, turnip, swede, canola/rapeseed, mustard, radish, rocket.'},
+
+{unit:'83',topic:'Classification',diff:'medium',type:'short',
+ q:'Name THREE important commercial varieties of broccoli (or cabbage/cauliflower) grown in Australia.',
+ keywords:['marathon','green','magic','pinnacle','arcadia','graffiti','snowball','destiny','ironman','legacy','green magic'],
+ hint:'Think named commercial/hybrid varieties you may have studied.',
+ exp:'Broccoli: Green Magic, Marathon, Ironman, Legacy, Arcadia, Emerald Crown. Cauliflower: Snowball, Pinnacle, Graffiti (purple). Cabbage: Sugarloaf, Savoy Queen, Destiny. (Accept any named commercial hybrid varieties.)'},
+
+// Climate and Soil
+{unit:'83',topic:'Climate & Soil',diff:'easy',type:'mcq',
+ q:'Brassica crops generally prefer which type of climate?',
+ opts:['Hot and tropical (30–40°C)','Cool to mild temperatures (10–25°C)','Arid desert conditions','Very humid subtropical conditions'],
+ ans:1, exp:'Brassicas are cool-season crops, preferring 10–25°C. High temperatures cause bolting (premature flowering), loose heads, and poor quality.'},
+
+{unit:'83',topic:'Climate & Soil',diff:'medium',type:'mcq',
+ q:'What soil pH is most suitable for growing brassica crops?',
+ opts:['4.5–5.5 (strongly acidic)','6.0–7.0 (slightly acidic to neutral)','7.5–8.5 (alkaline)','Any pH is fine'],
+ ans:1, exp:'Brassicas prefer slightly acidic to neutral soil: pH 6.0–7.0. A pH above 7.2 helps prevent clubroot disease. Very acidic soils cause nutrient deficiencies.'},
+
+{unit:'83',topic:'Climate & Soil',diff:'medium',type:'short',
+ q:'State the specific climatic and soil requirements (physical and chemical) for growing brassica crops.',
+ keywords:['cool','temperature','frost','10','25','rain','irrigat','ph','loam','drain','nitrogen','phosph','potassium','organic','humus','fertile'],
+ hint:'Climate: temperature, rainfall/moisture. Soil: texture, pH, drainage, nutrients.',
+ exp:'Climate: cool 10–20°C optimal, tolerates light frost, 500–800mm rainfall or irrigation, full sun. Soil: well-drained loam or clay-loam, pH 6.0–7.5, high organic matter, fertile (high N, P, K), good moisture retention. Avoid waterlogged or compacted soils.'},
+
+// Calendar of Operations
+{unit:'83',topic:'Calendar of Operations',diff:'medium',type:'mcq',
+ q:'What is the correct sequence of operations for growing brassica crops commercially?',
+ opts:['Harvest → Plant → Fertilise → Irrigate','Soil preparation → Sow seeds/transplant seedlings → Irrigate/fertilise → Pest control → Harvest',
+       'Seed sowing → Harvest → Transplant → Soil preparation','Transplant → Harvest → Soil prep → Sow seeds'],
+ ans:1, exp:'Correct sequence: Soil preparation (cultivate, lime, fertilise) → Sow seed in nursery/punnet → Transplant seedlings → Irrigation & nutrition management → Pest/weed control → Harvest → Post-harvest handling.'},
+
+{unit:'83',topic:'Calendar of Operations',diff:'hard',type:'short',
+ q:'Outline a full calendar/sequence of operations to grow broccoli commercially, with approximate timing.',
+ keywords:['soil','prepare','seed','sow','nursery','transplant','weeks','irrigat','fertilis','weed','pest','harvest','post'],
+ hint:'From soil prep to harvest. Include timing in weeks.',
+ exp:'Month 1: Soil test and preparation, lime if needed, add base fertiliser, cultivate. Weeks 1–3: Sow seed in nursery/punnets under shelter. Weeks 4–5: Transplant seedlings to field (4–6 true leaves). Weeks 5–12: Irrigation (drip/overhead), top-dress nitrogen, weed control, pest monitoring. Weeks 12–16: Harvest when head is tight/compact before flowering. Post-harvest: cool chain, grading, packaging.'},
+
+// Pests & Diseases
+{unit:'83',topic:'Pests & Diseases – Insects',diff:'easy',type:'mcq',
+ q:'The cabbage white butterfly (Pieris rapae) damages brassica plants because:',
+ opts:['Adults eat the roots','Larvae (caterpillars) eat leaves, creating holes and destroying the crop','Adults suck sap from stems','Larvae burrow into soil and cut stems'],
+ ans:1, exp:'Adult cabbage white butterflies lay eggs on brassica leaves. The green caterpillars (larvae) hatch and eat leaves voraciously, leaving large holes or completely destroying young plants and heads.'},
+
+{unit:'83',topic:'Pests & Diseases – Insects',diff:'medium',type:'mcq',
+ q:'What does the life cycle of the cabbage white butterfly include?',
+ opts:['Egg → Larva (caterpillar) → Pupa (chrysalis) → Adult butterfly',
+       'Egg → Nymph → Adult (no pupa)','Spore → Mycelium → Fruiting body','Oocyst → Sporozoite → Merozoite'],
+ ans:0, exp:'Complete metamorphosis: Egg (laid on leaf undersides) → Caterpillar/larva (feeding stage) → Pupa/chrysalis (non-feeding, transformation) → Adult butterfly. Cycle ~3–4 weeks in warm weather.'},
+
+{unit:'83',topic:'Pests & Diseases – Insects',diff:'hard',type:'short',
+ q:'Outline the life cycle, effects on plants, and commercial management of cabbage white butterfly.',
+ keywords:['egg','larva','caterpillar','pupa','chrysalis','adult','butterfly','leaf','hole','defoliat','Bt','bacillus','insecticid','pyrethroid','monitor','biological','netting','exclud'],
+ hint:'Life cycle (4 stages), damage (leaf eating), management (Bt, insecticide, netting, monitoring).',
+ exp:'Life cycle: Adult butterfly lays yellow ribbed eggs on leaf undersides → larvae (green caterpillars) hatch in 4–7 days and feed on leaves → pupate on stems/debris → adult emerges after ~10 days. Effects: extensive leaf holes, destroyed heads, contamination by frass. Commercial management: monitor regularly, Bt (Bacillus thuringiensis) biological spray (targets caterpillars only), synthetic pyrethroids, exclusion netting, parasitic wasps (Cotesia), crop rotation.'},
+
+{unit:'83',topic:'Pests & Diseases – Disease',diff:'medium',type:'mcq',
+ q:'Which disease causes large warty swellings or "clubs" on brassica roots, stunting growth and causing wilting?',
+ opts:['Downy mildew','Black rot','Clubroot (Plasmodiophora brassicae)','Sclerotinia stem rot'],
+ ans:2, exp:'Clubroot is caused by the soil-borne protist Plasmodiophora brassicae. It forms galls on roots, disrupting water/nutrient uptake, causing wilting even in moist soil and severely reducing yield.'},
+
+{unit:'83',topic:'Pests & Diseases – Disease',diff:'hard',type:'short',
+ q:'Outline the life cycle, effect on plants, and management of clubroot disease in brassicas.',
+ keywords:['plasmodiophora','spore','soil','root','gall','club','wilt','stunt','lime','ph','rotation','resistant','drainage','fungicide','biosecurit'],
+ hint:'Spores in soil → infect roots → galls form → release more spores. Control: lime, rotation, resistant varieties.',
+ exp:'Life cycle: Resting spores survive in soil for 20+ years. Germinate and infect root hairs → primary infection → spreads to cortex forming galls/clubs → galls release millions of spores when they decay. Effects: distorted clubs on roots, wilting, stunted growth, death of plant. Management: raise soil pH to 7.2+ with lime, crop rotation (4+ years without brassicas), use resistant varieties, improve drainage, clean machinery between paddocks (biosecurity), apply fungicides (fluazinam).'},
+
+{unit:'83',topic:'Pests & Diseases – Disease',diff:'medium',type:'mcq',
+ q:'Downy mildew on brassicas appears as:',
+ opts:['Brown watery lesions on roots only','Yellow patches on upper leaf surface with white/grey mould on underside',
+       'Black V-shaped lesions starting at leaf edges','White powdery coating on stem surface'],
+ ans:1, exp:'Downy mildew (Peronospora parasitica): yellow angular patches on upper surface of leaves with fluffy white/grey sporulation on the underside. Favoured by cool, humid conditions.'},
+
+// Harvest
+{unit:'83',topic:'Harvest',diff:'easy',type:'mcq',
+ q:'At what stage should broccoli be harvested?',
+ opts:['When the yellow flowers are fully open','When the head (curd) is compact and tight, before florets begin to open or yellow',
+       'When leaves have all died back','When the stem is at least 50cm tall regardless of head size'],
+ ans:1, exp:'Broccoli is harvested when the green head/curd is firm, compact, and tight before individual florets open or turn yellow. Once florets open, quality and market value drops rapidly.'},
+
+{unit:'83',topic:'Harvest',diff:'medium',type:'short',
+ q:'Describe how broccoli (or cauliflower) is harvested commercially, including method and post-harvest treatment.',
+ keywords:['cut','knife','hand','head','tight','cool','cold chain','hydrocool','ice','pack','grade','transport','shelf'],
+ hint:'Include: when to cut, how, cooling, packaging, transport.',
+ exp:'Harvested by hand with a knife, cutting the central head when compact and tight (broccoli) or white/creamy and firm (cauliflower). May require multiple picks. Post-harvest: immediately cooled (hydrocooling or forced-air cooling) to remove field heat and extend shelf life. Graded by size/quality, packed in boxes with ice, transported under refrigeration to markets. Shelf life: 2–3 weeks at 0–1°C.'},
+
+// Marketing
+{unit:'83',topic:'Marketing',diff:'medium',type:'mcq',
+ q:'Where are most commercial brassica vegetables sold in Australia?',
+ opts:['Directly exported overseas','Through the Sydney/Melbourne wholesale markets (central markets) and then to supermarkets',
+       'Only at roadside farm stalls','Exclusively through online platforms'],
+ ans:1, exp:'Most commercial vegetables pass through Sydney Markets, Melbourne Market etc. (wholesale central markets) where they are bought by retailers, restaurants, and exporters. Supermarkets may also buy directly from large growers.'},
+
+{unit:'83',topic:'Marketing',diff:'hard',type:'short',
+ q:'Outline the marketing of broccoli, including preparation of product and location of market.',
+ keywords:['grade','sort','pack','cool','market','wholesale','sydney','retail','supermarket','organic','export','price','contract','fresh'],
+ hint:'From farm gate through to consumer. Include preparation, markets, pricing.',
+ exp:'Post-harvest preparation: graded by head size/quality, trimmed, hydrocooled, packed in waxed cartons. Sold through: Central wholesale markets (Sydney Markets, Melbourne Wholesale Market), direct contracts with supermarkets (Coles, Woolworths), export (especially to Asia for premium varieties), farmers markets. Pricing fluctuates with season and supply. Most production in Victoria (Lindenow), Queensland (Lockyer Valley), NSW, and SA.'},
+
+// Consumption
+{unit:'83',topic:'Consumption & Nutrition',diff:'easy',type:'mcq',
+ q:'What is the main nutritional benefit of eating brassica vegetables?',
+ opts:['They are primarily a high-fat energy food','They are rich in fibre, Vitamin C, Vitamin K, folate and have anticancer compounds (glucosinolates)',
+       'They are the best source of complete protein in the diet','They provide mainly Vitamin B12 and iron'],
+ ans:1, exp:'Brassicas are nutritional powerhouses: high in Vitamin C (immune function), Vitamin K (blood clotting), fibre (gut health), folate, and glucosinolates/indoles which are linked to reduced cancer risk.'},
+
+{unit:'83',topic:'Consumption & Nutrition',diff:'medium',type:'short',
+ q:'State the role of brassica vegetables in the human diet and describe TWO ways they can be prepared and eaten.',
+ keywords:['vitamin c','fibre','antioxidant','cancer','folate','vitamin k','steam','stir fry','roast','raw','salad','boil','soup'],
+ hint:'Nutritional benefits + cooking methods.',
+ exp:'Role in diet: excellent source of Vitamin C, Vitamin K, dietary fibre, folate, antioxidants (glucosinolates). Low calorie, high micronutrient density. Helps reduce cancer risk. Methods: steamed (preserves vitamins), stir-fried, roasted, raw in salads, boiled, in soups/curries. Should not be overcooked as Vitamin C is heat and water-soluble.'},
+
+// Vocabulary
+{unit:'83',topic:'Vocabulary',diff:'easy',type:'mcq',
+ q:'Kohlrabi is best described as:',
+ opts:['A type of cabbage with tightly packed leaves forming a round head','A brassica grown for its swollen, above-ground stem (resembling a turnip above ground)',
+       'A variety of broccoli with purple florets','A root vegetable in the carrot family'],
+ ans:1, exp:'Kohlrabi (Brassica oleracea var. gongylodes) develops a large, round, swollen stem above the ground. The name means "cabbage-turnip" in German. It can be eaten raw or cooked.'},
+
+{unit:'83',topic:'Vocabulary',diff:'medium',type:'short',
+ q:'Define "commercial variety" in the context of brassica crops and give an example.',
+ keywords:['hybrid','cultivar','yield','disease','variety','select','breed','commercial','market'],
+ hint:'A named, selected plant type bred for consistent production.',
+ exp:'A commercial variety (cultivar) is a plant variety specifically bred and selected for consistent, high-yield commercial production, with traits like uniform head size, disease resistance, and market-desirable appearance. Example: Green Magic broccoli or Marathon broccoli.'},
+
+// Cross-topic/harder questions
+{unit:'82',topic:'Pests & Diseases',diff:'hard',type:'mcq',
+ q:'Why is the "all-in, all-out" management system important for disease control in poultry sheds?',
+ opts:['It reduces feed costs by feeding all birds at once','It allows the shed to be fully cleaned, disinfected and rested between flocks, breaking disease cycles',
+       'It means all eggs are collected at the same time','It is required by law for all poultry farms'],
+ ans:1, exp:'All-in all-out: all birds enter and leave as one group. The empty shed is then thoroughly cleaned, disinfected and rested. This breaks the cycle of pathogens (especially coccidiosis, respiratory diseases) that would otherwise persist and reinfect new birds.'},
+
+{unit:'82',topic:'Anatomy – Digestive Tract',diff:'hard',type:'mcq',
+ q:'Hens need GRIT in their diet because:',
+ opts:['Grit provides essential calcium for eggshell formation','Grit is retained in the gizzard to help grind food mechanically since birds have no teeth',
+       'Grit is a source of trace minerals and vitamins','Grit improves the flavour of eggs'],
+ ans:1, exp:'Birds have no teeth. Small stones/grit are swallowed and retained in the muscular gizzard. The contracting gizzard walls use grit to grind feed, especially whole grain, into smaller particles for digestion.'},
+
+{unit:'83',topic:'Climate & Soil',diff:'hard',type:'mcq',
+ q:'What is "bolting" in brassica production and what causes it?',
+ opts:['The crop being infected by bacterial disease','The premature formation of a flower stalk (running to seed) before the head forms, usually triggered by heat or long days',
+       'Root stunting from clubroot disease','Excessive leafy growth at expense of head formation'],
+ ans:1, exp:'Bolting = premature flowering/running to seed. Triggered by: high temperatures, long day length, drought stress, or transplanting very young/old seedlings. Bolted plants produce no usable head and must be discarded.'},
+
+{unit:'82',topic:'Nutrition',diff:'hard',type:'mcq',
+ q:'Which mineral is most critical in layer pellets and why?',
+ opts:['Iron – for blood haemoglobin','Calcium – for eggshell formation (requires ~4g/egg)','Zinc – for immune function','Magnesium – for nerve function'],
+ ans:1, exp:'Calcium is the most critical mineral in layer feed. A single eggshell requires approximately 2–4g of calcium. Without adequate calcium, hens produce thin-shelled eggs and may develop cage layer fatigue (osteoporosis).'},
+
+{unit:'83',topic:'Pests & Diseases – Insects',diff:'medium',type:'mcq',
+ q:'Bacillus thuringiensis (Bt) is an effective management tool for cabbage white butterfly because:',
+ opts:['It is a systemic fungicide that kills fungal diseases','It produces proteins toxic to caterpillars/larvae when ingested, but is harmless to humans, birds and beneficial insects',
+       'It repels adult butterflies from laying eggs','It is a broad-spectrum herbicide that removes host plants'],
+ ans:1, exp:'Bt is a naturally occurring soil bacterium. When caterpillars eat Bt-sprayed leaves, the toxic proteins (Cry proteins) destroy their gut lining, killing them. It is safe for humans, birds, and most beneficial insects, making it ideal for integrated pest management (IPM).'},
+
+// Extra hard cross-unit
+{unit:'82',topic:'Work Health & Safety',diff:'hard',type:'mcq',
+ q:'Ammonia in a poultry shed is produced primarily from:',
+ opts:['Decomposition of feathers by bacteria','Microbial breakdown of uric acid in manure and litter','Oxidation of feed ingredients','Carbon dioxide released by bird respiration'],
+ ans:1, exp:'Hens excrete uric acid (not urea like mammals) in their faeces. Bacteria in the litter break down uric acid to ammonia (NH3). Levels above 25ppm cause eye irritation, respiratory damage and reduced productivity in both birds and workers.'},
+
+{unit:'83',topic:'Calendar of Operations',diff:'medium',type:'mcq',
+ q:'Why are brassica seedlings grown in a nursery/punnet before transplanting rather than direct seeding?',
+ opts:['Brassica seeds cannot germinate in field soil','It allows better control of early growth conditions, saves field space, reduces weed competition and allows uniform plant establishment',
+       'Direct seeding is always used commercially – transplanting is only for home gardens','Seeds require 6 months of cold storage before planting'],
+ ans:1, exp:'Nursery propagation: controlled environment → higher germination rates, uniform seedling size. Transplanting allows field preparation during nursery phase. Reduces time field is occupied. Better stand establishment and crop uniformity.'},
+
+{unit:'82',topic:'Housing & Production Systems',diff:'hard',type:'short',
+ q:'Construct a list of basic needs for laying hens and explain how the barn system meets each need.',
+ keywords:['feed','water','space','light','ventil','nest','perch','litter','health','protection','barn','floor'],
+ hint:'Needs: feed, water, space, light, ventilation, nesting, perching, health care, protection.',
+ exp:'Basic needs → Barn system: Feed – automatic feeders with layer pellets ad-lib or restricted. Water – nipple drinker systems. Space – 9 birds/m² maximum (free-range requirement differs). Light – artificial lighting 16hr/day stimulates laying. Ventilation – fans prevent ammonia/dust buildup. Nesting boxes – 1 per 5 hens. Perches – tiered perch systems. Litter – wood shavings/rice hulls for dust bathing. Health – vaccination programs, pest monitoring.'},
+
+];
+
+// ===================== STATE =====================
+let state = {
+  section: 'both',
+  difficulty: 'easy',
+  questions: [],
+  queue: [],
+  currentIdx: 0,
+  current: null,
+  correct: 0,
+  wrong: 0,
+  answered: 0,
+  topicStats: {},
+  missedQs: [],
+  timerInterval: null,
+  timeLeft: 0,
+  maxTime: 60,
+  answered_q: false,
+  repeatPool: [],
+  totalOriginal: 0,
+};
+
+const TIME_LIMITS = { easy: 60, medium: 40, hard: 20 };
+
+function toggleSection(s) {
+  state.section = s;
+  document.querySelectorAll('.section-pick .pill').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+function setDiff(d) {
+  state.difficulty = d;
+  ['easy','medium','hard'].forEach(x => document.getElementById('dc-'+x).classList.remove('active'));
+  document.getElementById('dc-'+d).classList.add('active');
+}
+
+function startQuiz() {
+  let pool = ALL_QUESTIONS;
+  if (state.section === '82') pool = pool.filter(q => q.unit === '82');
+  if (state.section === '83') pool = pool.filter(q => q.unit === '83');
+
+  // Filter by difficulty (include all for easy, easy+medium for medium, all for hard)
+  if (state.difficulty === 'easy') pool = pool.filter(q => q.diff === 'easy');
+  else if (state.difficulty === 'medium') pool = pool.filter(q => q.diff !== 'hard');
+  // hard: all questions
+
+  // Shuffle
+  pool = shuffle(pool);
+  state.questions = pool;
+  state.queue = [...pool];
+  state.totalOriginal = pool.length;
+  state.repeatPool = [];
+  state.correct = 0;
+  state.wrong = 0;
+  state.answered = 0;
+  state.topicStats = {};
+  state.missedQs = [];
+  state.maxTime = TIME_LIMITS[state.difficulty];
+
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  document.getElementById('q-total').textContent = pool.length;
+  document.getElementById('q-diff-badge').textContent = capitalize(state.difficulty);
+  document.getElementById('q-diff-badge').className = 'badge ' + state.difficulty;
+
+  nextQuestion();
+}
+
+function nextQuestion() {
+  clearTimer();
+  document.getElementById('feedback-area').style.display = 'none';
+  document.getElementById('mcq-area').innerHTML = '';
+  document.getElementById('short-area').style.display = 'none';
+  document.getElementById('short-input').value = '';
+  document.getElementById('short-input').value = '';
+     document.getElementById('short-input').disabled = false;
+  // First go through main queue, then repeat pool
+  let q = null;
+  if (state.queue.length > 0) {
+    q = state.queue.shift();
+  } else if (state.repeatPool.length > 0) {
+    state.repeatPool = shuffle(state.repeatPool);
+    q = state.repeatPool.shift();
+  } else {
+    showResults();
+    return;
+  }
+
+  state.current = q;
+  state.answered_q = false;
+  state.currentIdx++;
+
+  // Update UI
+  document.getElementById('q-num').textContent = state.currentIdx;
+  document.getElementById('q-unit-badge').textContent = q.unit === '82' ? 'Unit 8.2' : 'Unit 8.3';
+  document.getElementById('q-unit-badge').className = 'badge unit' + q.unit;
+  document.getElementById('q-type-badge').textContent = q.type === 'mcq' ? 'MCQ' : 'Short Answer';
+  document.getElementById('q-topic').textContent = q.topic;
+  document.getElementById('q-text').textContent = q.q;
+
+  updateStats();
+
+  if (q.type === 'mcq') {
+    renderMCQ(q);
+  } else {
+    renderShort(q);
+  }
+
+  startTimer();
+}
+
+function renderMCQ(q) {
+  const area = document.getElementById('mcq-area');
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.textContent = opt;
+    btn.onclick = () => answerMCQ(i);
+    area.appendChild(btn);
+  });
+}
+
+function renderShort(q) {
+  document.getElementById('short-area').style.display = 'flex';
+  document.getElementById('hint-text').textContent = state.difficulty !== 'hard' ? '💡 Hint: ' + q.hint : '';
+}
+
+function answerMCQ(chosen) {
+  if (state.answered_q) return;
+  state.answered_q = true;
+  clearTimer();
+  const q = state.current;
+  const btns = document.querySelectorAll('.opt-btn');
+  btns.forEach(b => b.disabled = true);
+
+  const correct = chosen === q.ans;
+  btns[chosen].classList.add(correct ? 'correct' : 'wrong');
+  if (!correct) btns[q.ans].classList.add('correct');
+
+  recordAnswer(correct, q);
+  showFeedback(correct, q.exp);
+}
+
+function submitShort() {
+  if (state.answered_q) return;
+  state.answered_q = true;
+  clearTimer();
+  const q = state.current;
+  const answer = document.getElementById('short-input').value.toLowerCase();
+
+  // Keyword matching
+  const matched = q.keywords.filter(kw => answer.includes(kw.toLowerCase()));
+  const threshold = Math.max(2, Math.floor(q.keywords.length * 0.35));
+  const correct = matched.length >= threshold;
+
+  document.getElementById('short-input').disabled = true;
+  recordAnswer(correct, q);
+  showFeedback(correct, q.exp, matched, q.keywords);
+}
+
+function skipQ() {
+  if (state.answered_q) return;
+  state.answered_q = true;
+  clearTimer();
+  recordAnswer(false, state.current);
+  showFeedback(false, state.current.exp);
+}
+
+function recordAnswer(correct, q) {
+  if (!state.topicStats[q.topic]) state.topicStats[q.topic] = {c:0,w:0};
+  if (correct) {
+    state.correct++;
+    state.topicStats[q.topic].c++;
+  } else {
+    state.wrong++;
+    state.topicStats[q.topic].w++;
+    // Add to repeat pool
+    state.repeatPool.push(q);
+    state.missedQs.push({q: q.q, exp: q.exp});
+  }
+  state.answered++;
+  updateStats();
+  updateProgress();
+}
+
+function showFeedback(correct, exp, matched, keywords) {
+  const box = document.getElementById('feedback-box');
+  const title = document.getElementById('feedback-title');
+  const body = document.getElementById('feedback-body');
+  box.className = 'feedback-box ' + (correct ? 'correct' : 'incorrect');
+  title.textContent = correct ? '✓ Correct!' : '✗ Incorrect';
+  let text = exp;
+  if (!correct && matched && keywords) {
+    text = `Keywords matched: ${matched.join(', ') || 'none'} (needed ~${Math.max(2,Math.floor(keywords.length*0.35))})\n\n` + exp;
+  }
+  if (!correct && state.repeatPool.length > 0) {
+    text += '\n\n⟳ This question will repeat until you get it right.';
+  }
+  body.textContent = text;
+  document.getElementById('feedback-area').style.display = 'block';
+}
+
+function updateStats() {
+  const total = state.answered;
+  const pct = total > 0 ? Math.round(state.correct / total * 100) : '—';
+  document.getElementById('stat-correct').textContent = state.correct;
+  document.getElementById('stat-wrong').textContent = state.wrong;
+  document.getElementById('stat-pct').textContent = total > 0 ? pct + '%' : '—';
+  document.getElementById('stat-repeat').textContent = state.repeatPool.length;
+}
+
+function updateProgress() {
+  const done = state.answered;
+  const total = state.totalOriginal;
+  const pct = Math.min(100, Math.round(done / total * 100));
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+// Timer
+function startTimer() {
+  state.timeLeft = state.maxTime;
+  updateTimerBar(state.timeLeft);
+  state.timerInterval = setInterval(() => {
+    state.timeLeft--;
+    updateTimerBar(state.timeLeft);
+    if (state.timeLeft <= 0) {
+      clearTimer();
+      if (!state.answered_q) {
+        document.body.classList.add('timeout-flash');
+        setTimeout(() => document.body.classList.remove('timeout-flash'), 300);
+        timeOut();
+      }
+    }
+  }, 1000);
+}
+
+function clearTimer() {
+  clearInterval(state.timerInterval);
+}
+
+function updateTimerBar(t) {
+  const pct = Math.max(0, t / state.maxTime * 100);
+  const bar = document.getElementById('timer-bar');
+  bar.style.width = pct + '%';
+  bar.style.background = pct > 50 ? '#fff' : pct > 25 ? '#ffd24a' : '#ff6b6b';
+  document.getElementById('timer-text').textContent = t;
+}
+
+function timeOut() {
+  state.answered_q = true;
+  const q = state.current;
+  if (q.type === 'mcq') {
+    const btns = document.querySelectorAll('.opt-btn');
+    btns.forEach(b => b.disabled = true);
+    btns[q.ans].classList.add('correct');
+  } else {
+    document.getElementById('short-input').disabled = true;
+  }
+  recordAnswer(false, q);
+  const box = document.getElementById('feedback-box');
+  const title = document.getElementById('feedback-title');
+  const body = document.getElementById('feedback-body');
+  box.className = 'feedback-box incorrect';
+  title.textContent = '⏱ Time\'s Up!';
+  body.textContent = q.exp + '\n\n⟳ This question will repeat.';
+  document.getElementById('feedback-area').style.display = 'block';
+}
+
+// Results
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('results-screen').style.display = 'block';
+
+  const pct = Math.round(state.correct / state.answered * 100);
+  document.getElementById('final-pct').textContent = pct + '%';
+  let label = '';
+  if (pct >= 90) label = '🏆 Excellent! You\'re ready.';
+  else if (pct >= 75) label = '✓ Good work! Review weak topics.';
+  else if (pct >= 60) label = '📚 Passing, but study more.';
+  else label = '⚠️ Need more study – retry missed Qs!';
+  document.getElementById('final-label').textContent = label;
+
+  // Topic breakdown
+  const bd = document.getElementById('topic-breakdown');
+  bd.innerHTML = '<h3>Topic Breakdown</h3>';
+  for (const [topic, s] of Object.entries(state.topicStats)) {
+    const total = s.c + s.w;
+    const p = Math.round(s.c / total * 100);
+    const cls = p >= 75 ? 'strong' : p >= 50 ? 'ok' : 'weak';
+    const row = document.createElement('div');
+    row.className = 'brow';
+    row.innerHTML = `<span>${topic}</span><span class="${cls}">${s.c}/${total} (${p}%)</span>`;
+    bd.appendChild(row);
+  }
+
+  // Missed questions
+  if (state.missedQs.length > 0) {
+    const ml = document.getElementById('missed-list');
+    ml.innerHTML = '<h3>Questions You Missed</h3>';
+    const unique = [];
+    const seen = new Set();
+    state.missedQs.forEach(m => { if (!seen.has(m.q)) { seen.add(m.q); unique.push(m); } });
+    unique.forEach(m => {
+      const d = document.createElement('div');
+      d.className = 'missed-item';
+      d.innerHTML = `<div class="mq">${m.q}</div><div class="ma">${m.exp}</div>`;
+      ml.appendChild(d);
+    });
+  }
+}
+
+function restartMissed() {
+  if (state.missedQs.length === 0) { location.reload(); return; }
+  const seen = new Set();
+  const unique = [];
+  state.missedQs.forEach(m => {
+    if (!seen.has(m.q)) { seen.add(m.q); unique.push(m.q); }
+  });
+  const pool = ALL_QUESTIONS.filter(q => unique.includes(q.q));
+  state.queue = shuffle(pool);
+  state.repeatPool = [];
+  state.correct = 0;
+  state.wrong = 0;
+  state.answered = 0;
+  state.currentIdx = 0;
+  state.topicStats = {};
+  state.missedQs = [];
+  state.totalOriginal = pool.length;
+  document.getElementById('q-total').textContent = pool.length;
+  document.getElementById('results-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  nextQuestion();
+}
+
+// Helpers
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+</script>
+</body>
+</html>

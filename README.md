@@ -10,5 +10,5 @@ All content below this is weblinks.
 ## Y8 Half Yearly
 [Agriculture](https://katsugachi.github.io/XiM-Cram-Material/Y8/Half%20Yearly/XiM-Agriculture.html) <br>
 [Science](https://katsugachi.github.io/XiM-Cram-Material/Y8/Half%20Yearly/XiM-Science.html) <br>
-[Latin](https://katsugachi.github.io/XiM-Cram-Material/Y8/Half%20Yearly/XiM-Latin-C6.html) <br>
+[Latin](https://katsugachi.github.io/XiM-Cram-Material/Y8/Half%20Yearly/XiM-Latin%20C6.html) <br>
 [Geography](https://katsugachi.github.io/XiM-Cram-Material/Y8/Half%20Yearly/XiM-Geography.html)
